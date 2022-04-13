@@ -33,4 +33,12 @@
         <item name="android:paddingBottom">5dp</item>
         <item name="android:popupBackground">#DFFFFFFF</item>
     </style>
+
+    <style name="navText" >
+        <item name="android:background">@drawable/nav_rectangle_selector</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/roboto_black</item>
+    </style>
 </resources>
