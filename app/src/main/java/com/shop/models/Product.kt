@@ -10,6 +10,6 @@ data class Product(
     val title: String,
 ) {
     companion object {
-        var products = mutableListOf<Product>()
+        var products = mutableSetOf<Product>()
     }
 }

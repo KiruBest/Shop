@@ -22,10 +22,10 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductHolder>() {
 
     @SuppressLint("SetTextI18n", "CheckResult", "NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ProductHolder, position: Int) {
-        holder.title.text = Product.products[position].title
-        holder.price.text = Product.products[position].price.toString() + "₽"
+        holder.title.text = Product.products.elementAt(position).title
+        holder.price.text = Product.products.elementAt(position).price.toString() + "₽"
         Glide.with(holder.itemView)
-            .load("https://sun9-5.userapi.com/impg/c857628/v857628060/169753/2l2vzOX9xZY.jpg?size=1080x720&quality=96&sign=2f61c3552e32740b8c00ad3ab9b2824c&type=album")
+            .load(Product.products.elementAt(position).photo)
             .into(holder.photo)
     }
 
