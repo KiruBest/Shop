@@ -3,8 +3,26 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/background_sort_drawable.xml" value="0.1" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.1" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/ic_baseline_chat_24.xml" value="0.1" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.106" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/nav_active_pressed.xml" value="0.1" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/nav_rectangle.xml" value="0.168" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/nav_rectangle_active.xml" value="0.2405" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/nav_rectangle_not_active.xml" value="0.168" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/nav_rectangle_pressed.xml" value="0.1145" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/nav_rectangle_selector.xml" value="0.168" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/search.xml" value="0.168" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/search_drawable.xml" value="0.106" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/toolbar_gradient.xml" value="0.168" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_basket.xml" value="0.25" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_shop.xml" value="0.1" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/product_cart.xml" value="0.1" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/sort_spinner_layout.xml" value="0.25" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/menu/main_toolbar_menu.xml" value="0.234375" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/menu/sort_menu.xml" value="0.25" />
       </map>
     </option>
   </component>

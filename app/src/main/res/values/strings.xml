@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Shop</string>
+    <string name="main_toolbar_title">У Геннадия Букиславина</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="catalog">Каталог</string>
+    <string name="favorite">Избранное</string>
+    <string name="basket">Корзина</string>
+    <string name="sort">Сортировка</string>
+    <string name="search">Поиск</string>
+
+    <string-array name="sort_category">
+        <item>По названию</item>
+    </string-array>
 </resources>
