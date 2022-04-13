@@ -101,6 +101,7 @@
             android:layout_marginEnd="11dp"
             android:background="@drawable/nav_rectangle_selector"
             android:gravity="center"
+            android:fontFamily="@font/roboto_black"
             android:text="@string/catalog"
             android:textColor="@color/black"
             android:textSize="12sp"
