@@ -33,9 +33,8 @@ class DB private constructor() {
                             photo,
                             price,
                             title))
+                        ShopFragment.productAdapter.notifyDataSetChanged()
                     }
-
-                    ShopFragment.productAdapter.notifyDataSetChanged()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
