@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_marginTop="@dimen/fragment_margin_top_scroll"
-    tools:context=".ui.main.BasketFragment">
+    tools:context=".ui.main.FavoriteFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -13,4 +12,4 @@
         android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment" />
 
-</LinearLayout>
+</FrameLayout>

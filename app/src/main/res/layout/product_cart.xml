@@ -35,26 +35,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/toolbar_gradient" />
+        tools:srcCompat="@drawable/toolbar_gradient"
+        android:contentDescription="photo" />
 
     <ImageView
         android:id="@+id/basket_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photo"
-        app:srcCompat="@drawable/ic_baseline_shopping_basket_20" />
+        app:srcCompat="@drawable/ic_baseline_shopping_basket_20"
+        android:contentDescription="@string/basket" />
 
     <ImageView
         android:id="@+id/star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintEnd_toStartOf="@+id/basket_image"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/photo"
-        app:srcCompat="@drawable/ic_baseline_star_20" />
+        app:srcCompat="@drawable/ic_baseline_star_20"
+        app:tint="@color/favorite_add_color_changer"
+        android:contentDescription="star" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

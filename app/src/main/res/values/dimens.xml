@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="toolbar_height">50dp</dimen>
+    <dimen name="nav_layout_height">30dp</dimen>
+    <dimen name="toolbar_auth_corners_radius">64dp</dimen>
+    <dimen name="fragment_margin_top_scroll">92dp</dimen>
 </resources>

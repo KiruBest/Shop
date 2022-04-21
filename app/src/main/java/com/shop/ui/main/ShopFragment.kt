@@ -1,6 +1,5 @@
-package com.shop.ui
+package com.shop.ui.main
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +11,19 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.shop.R
 import com.shop.adapters.ProductAdapter
 import com.shop.databinding.FragmentShopBinding
+import com.shop.firebase.IProductDatabase
+import com.shop.firebase.ProductDatabase
+import com.shop.models.Product
 
 class ShopFragment : Fragment() {
     private var _binding: FragmentShopBinding? = null
     private val binding get() = _binding!!
+
+    //Хранит ссылку на обхект для работы с БД
+    //Работает с товарами
+    private var productDatabase: IProductDatabase = ProductDatabase.instance()
+
+    private lateinit var productAdapter: ProductAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,23 +36,31 @@ class ShopFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.productRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+
+        //Grid layout позволяет располагать товары в 2 столбца
+        val gridLayoutManager = object : GridLayoutManager(requireContext(), 2) {
+            //Запрет скролла самого view, это для красоты и удобства
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+        }
+
+        //Менеджер и адаптер привязывается к RecyclerView
+        binding.productRecyclerView.layoutManager = gridLayoutManager
         binding.productRecyclerView.adapter = productAdapter
         setCategoryClick()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        productAdapter = ProductAdapter()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onStart() {
+        //Получение всех товаров
+        Product.products =
+            productDatabase.readProduct(binding.progressBar, productAdapter)
         super.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //TODO Здесь Должен Быть твой код!
     }
 
     override fun onDestroyView() {
@@ -52,6 +68,8 @@ class ShopFragment : Fragment() {
         _binding = null
     }
 
+    //Обработка кликов сортировки по категориям
+    //Сама логика будет в addProductCategory и deleteProductCategory
     private fun setCategoryClick() {
         binding.man.setOnClickListener {
             categoryClick(it as TextView)
@@ -66,6 +84,7 @@ class ShopFragment : Fragment() {
         }
     }
 
+    //Тут выбранные пункты красятся в черный, а не выбранные в белый
     private fun categoryClick(textView: TextView) {
         if (textView.isActivated) {
             textView.isActivated = false
@@ -79,18 +98,14 @@ class ShopFragment : Fragment() {
     }
 
     private fun addProductCategory(textView: TextView) {
-        when(textView.text){
-            //TODO Логика смены категорий "" ->
+        when (textView.text) {
+            //TODO(Логика добавления товара категории) "" ->)
         }
     }
 
     private fun deleteProductCategory(textView: TextView) {
-        when(textView.text){
-            //TODO Логика смены категорий "" ->
+        when (textView.text) {
+            //TODO (Логика удаления товара категории) "" ->
         }
-    }
-
-    companion object {
-        val productAdapter = ProductAdapter()
     }
 }

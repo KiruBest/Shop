@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.main.MainActivity">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -19,20 +20,12 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph" />
     </ScrollView>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/mainToolbar"
@@ -64,7 +57,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_search_24" />
+            app:srcCompat="@drawable/ic_baseline_search_24"
+            android:contentDescription="search" />
 
         <EditText
             android:id="@+id/search"
@@ -79,15 +73,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="no" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/navLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/nav_layout_height"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        android:weightSum="4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_layout">
@@ -95,50 +93,51 @@
 
         <TextView
             android:id="@+id/navShop"
-            android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="11dp"
-            android:text="@string/catalog"
-            style="@style/navText"
-            app:layout_constraintEnd_toStartOf="@+id/navFavorite"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            style="@style/nav_item"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:text="@string/catalog" />
 
         <TextView
             android:id="@+id/navFavorite"
-            android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="11dp"
-            android:text="@string/favorite"
-            style="@style/navText"
-            app:layout_constraintEnd_toStartOf="@+id/navBasket"
-            app:layout_constraintStart_toEndOf="@+id/navShop"
-            app:layout_constraintTop_toTopOf="parent" />
+            style="@style/nav_item"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:text="@string/favorite" />
 
         <TextView
             android:id="@+id/navBasket"
-            android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="12dp"
-            android:text="@string/basket"
-            style="@style/navText"
-            app:layout_constraintEnd_toStartOf="@+id/sort"
-            app:layout_constraintStart_toEndOf="@+id/navFavorite"
-            app:layout_constraintTop_toTopOf="parent" />
+            style="@style/nav_item"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:text="@string/basket" />
 
         <TextView
             android:id="@+id/sort"
-            android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/sort"
-            style="@style/navText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/navBasket"
-            app:layout_constraintTop_toTopOf="parent" />
+            style="@style/nav_item"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:text="@string/sort" />
+    </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navView"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_layout_height"
+        android:orientation="horizontal"
+        style="@style/nav_item"
+        app:itemBackground="@drawable/nav_rectangle_selector"
+        app:itemShapeAppearance="@style/nav_item"
+        app:itemTextColor="@color/nav_text_color"
+        app:itemActiveIndicatorStyle="@style/nav_item"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/navigation" />
 
     <Spinner
         android:id="@+id/sortSpinner"

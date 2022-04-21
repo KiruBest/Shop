@@ -1,4 +1,4 @@
-package com.shop.ui
+package com.shop.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +17,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [BasketFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+
+//TODO(Тут пока ничего нет!)
 class BasketFragment : Fragment() {
     private var _binding: FragmentBasketBinding? = null
     private val binding get() = _binding!!

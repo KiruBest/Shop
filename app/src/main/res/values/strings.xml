@@ -8,6 +8,9 @@
     <string name="basket">Корзина</string>
     <string name="sort">Сортировка</string>
     <string name="search">Поиск</string>
+    <string name="sign_out">Выйти</string>
+    <string name="profile">Профиль</string>
+    <string name="hello_text">Заходи\nНе задерживайся</string>
 
     <string-array name="sort_category">
         <item>По названию</item>
