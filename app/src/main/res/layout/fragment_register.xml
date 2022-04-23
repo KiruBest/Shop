@@ -1,60 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="16dp"
     android:background="@drawable/register_rectangle"
     android:orientation="vertical"
-    android:layout_marginBottom="16dp"
-    android:layout_marginHorizontal="16dp"
     tools:context=".ui.register.RegisterFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Зарегистрировать аккаунт" />
+        android:weightSum="10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            android:fontFamily="@font/roboto_condensed_bold_italic"
+            android:text="Зарегистрировать аккаунт"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:contentDescription="close"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/ic_baseline_close_24"
+            app:tint="@color/black" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <EditText
         android:id="@+id/mail"
+        style="@style/edit_text_style"
         android:layout_width="240dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/nav_rectangle_not_active"
+        android:autofillHints="emailAddress"
         android:hint="Введите почту"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="false"
-        android:singleLine="true"
-        android:autofillHints="emailAddress" />
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/pwd"
+        style="@style/edit_text_style"
         android:layout_width="240dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="18dp"
-        android:background="@drawable/nav_rectangle_not_active"
+        android:autofillHints="password"
         android:hint="Введите пароль"
         android:inputType="textPassword"
         android:selectAllOnFocus="false"
-        android:singleLine="true"
-        android:autofillHints="password" />
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/rePwd"
+        style="@style/edit_text_style"
         android:layout_width="240dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="18dp"
-        android:background="@drawable/nav_rectangle_not_active"
+        android:autofillHints="password"
         android:hint="Повторите пароль"
         android:inputType="textPassword"
         android:selectAllOnFocus="false"
-        android:singleLine="true"
-        android:autofillHints="password"/>
+        android:singleLine="true" />
 
     <Button
         android:id="@+id/buttonReg"

@@ -47,4 +47,9 @@
     <style name="nav_menu_list" parent="@android:style/Widget.Holo.ListView.DropDown">
         <item name="android:columnWidth">10dp</item>
     </style>
+
+    <style name="edit_text_style">
+        <item name="android:background">@drawable/nav_rectangle_not_active</item>
+        <item name="android:paddingLeft">12dp</item>
+    </style>
 </resources>

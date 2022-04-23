@@ -8,27 +8,27 @@
 
     <EditText
         android:id="@+id/mail"
+        style="@style/edit_text_style"
         android:layout_width="240dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/nav_rectangle_not_active"
-        android:hint="Почта"
         android:autofillHints="emailAddress"
+        android:hint="Почта"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="false"
         android:singleLine="true" />
 
     <EditText
         android:id="@+id/pwd"
+        style="@style/edit_text_style"
         android:layout_width="240dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="18dp"
-        android:background="@drawable/nav_rectangle_not_active"
-        android:hint="Пароль"
         android:autofillHints="password"
+        android:hint="Пароль"
         android:inputType="textPassword"
         android:selectAllOnFocus="false"
         android:singleLine="true" />

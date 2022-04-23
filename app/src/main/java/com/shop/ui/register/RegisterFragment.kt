@@ -23,6 +23,21 @@ class RegisterFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        //Привязка слушателей к кнопке
+        initButtonsClick()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initButtonsClick() {
+        //Клик по крестику
+        binding.close.setOnClickListener {
+            (requireContext() as AuthActivity).supportFragmentManager.popBackStack()
+        }
+
         //Привязывается действия по клику на кнопку Подтвердить регистрацию
         binding.buttonReg.setOnClickListener {
             when {
@@ -54,16 +69,11 @@ class RegisterFragment : Fragment() {
                     //Вызывается метод создания аккаунта
                     (requireContext() as AuthActivity).userDatabase
                         .createAccount(binding.mail.text.toString(),
-                        binding.pwd.text.toString(), requireActivity())
+                            binding.pwd.text.toString(), requireActivity())
                     //Окно регистрации меняется на предыдущее
                     (requireContext() as AuthActivity).supportFragmentManager.popBackStack()
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
