@@ -13,6 +13,9 @@
     <string name="hello_text">Заходи\nНе задерживайся</string>
 
     <string-array name="sort_category">
-        <item>По названию</item>
+        <item>По названию (↑)</item>
+        <item>По названию (↓)</item>
+        <item>По цене (↑)</item>
+        <item>По цене (↓)</item>
     </string-array>
 </resources>

@@ -6,10 +6,10 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -18,8 +18,10 @@ import com.shop.R
 import com.shop.databinding.ActivityMainBinding
 import com.shop.firebase.UserDatabase
 import com.shop.models.User
+import com.shop.sort.Sorting
 import com.shop.ui.register.AuthActivity
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
+
 
 class MainActivity : AppCompatActivity() {
     //Хранится ссылка на объект, который работает с Firebase, скорее всего так лучше не делать
@@ -87,9 +89,11 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.profile -> {
                 //TODO(Переход на страницу профиля)
-                Toast.makeText(this,
+                Toast.makeText(
+                    this,
                     "${User.currentUser?.photo}, ${User.currentUser?.email}",
-                    Toast.LENGTH_SHORT)
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
 
@@ -185,9 +189,49 @@ class MainActivity : AppCompatActivity() {
     private fun initSortSpinner() {
         //Назначение адаптера - преобразовать один вид информации в другой,
         // без вмешательства в исходное состояние информации.
-        val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(this,
-            R.array.sort_category, R.layout.support_simple_spinner_dropdown_item)
+
+        val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+            this,
+            R.array.sort_category, R.layout.support_simple_spinner_dropdown_item
+        )
         //Установка адаптера
         binding.sortSpinner.adapter = adapter
+        binding.sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            //Функция для клика
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                itemSelected: View?, selectedItemPosition: Int, selectedId: Long
+            ) {
+
+                // Получаем все элементы из спиннера
+                val sortName = resources.getStringArray(R.array.sort_category)
+                //Получаем текст из нажатого textview
+                val text: String = binding.sortSpinner.selectedItem.toString()
+                val s = Sorting()
+
+                //Сравниваем значения полученное при нажатии с каждым элементом спинера
+                when (text) {
+                    sortName[0] -> {
+                        s.sortName()
+                        //Возможно понадобиться эта функция
+                        //startActivity(Intent(this, BarsikActivity::class.java))
+                    }
+                    sortName[1] -> {
+                        s.sortNameDec()
+                    }
+                    sortName[2] -> {
+                        s.sortPrice()
+                    }
+                    sortName[3] -> {
+                        s.sorPriceDec()
+                    }
+                }
+
+            }
+            //Используется, когда ни на что не кликнули
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
     }
+
+
 }
