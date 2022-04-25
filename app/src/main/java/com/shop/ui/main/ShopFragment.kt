@@ -1,5 +1,6 @@
 package com.shop.ui.main
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,6 @@ import com.shop.adapters.ProductAdapter
 import com.shop.databinding.FragmentShopBinding
 import com.shop.firebase.IProductDatabase
 import com.shop.firebase.ProductDatabase
-import com.shop.models.Product
 
 class ShopFragment : Fragment() {
     private var _binding: FragmentShopBinding? = null
@@ -58,14 +58,18 @@ class ShopFragment : Fragment() {
 
     override fun onStart() {
         //Получение всех товаров
-        Product.products =
-            productDatabase.readProduct(binding.progressBar, productAdapter)
+        productDatabase.readProduct(binding.progressBar, productAdapter)
         super.onStart()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun notifyProductAdapterChange() {
+        productAdapter.notifyDataSetChanged()
     }
 
     //Обработка кликов сортировки по категориям

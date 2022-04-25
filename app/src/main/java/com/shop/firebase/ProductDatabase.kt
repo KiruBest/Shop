@@ -12,25 +12,24 @@ import com.google.firebase.ktx.Firebase
 import com.shop.adapters.ProductAdapter
 import com.shop.models.Product
 
-class ProductDatabase private constructor(): IProductDatabase {
+class ProductDatabase private constructor() : IProductDatabase {
     //Добавление всех товаров из БД
     override fun readProduct(
         progressBar: ProgressBar,
         adapter: ProductAdapter,
-    ): ArrayList<Product> {
+    ) {
+        if (Product.products.size != 0) return
         progressBar.visibility = ProgressBar.VISIBLE
-        val products = mutableListOf<Product>()
 
         Firebase.database.getReference("products")
-            .addValueEventListener(object : ValueEventListener {
+            .addListenerForSingleValueEvent(object : ValueEventListener {
 
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val keys = mutableListOf<String>()
+                    Product.products.clear()
                     snapshot.children.forEach {
-                        it.key?.let { key1 -> keys.add(key1) }
                         val product = it.getValue(Product::class.java)
-                        product?.let { product1 -> products.add(product1) }
+                        Product.products.add(product!!)
                     }
                     adapter.notifyDataSetChanged()
                     progressBar.visibility = ProgressBar.INVISIBLE
@@ -41,8 +40,6 @@ class ProductDatabase private constructor(): IProductDatabase {
                 }
 
             })
-
-        return products as ArrayList<Product>
     }
 
     override fun writeProduct(product: Product) {
@@ -51,7 +48,7 @@ class ProductDatabase private constructor(): IProductDatabase {
 
     companion object {
         private var productDatabase: IProductDatabase? = null
-        fun instance() : IProductDatabase {
+        fun instance(): IProductDatabase {
             if (productDatabase == null) productDatabase = ProductDatabase()
             return productDatabase as IProductDatabase
         }
@@ -59,6 +56,6 @@ class ProductDatabase private constructor(): IProductDatabase {
 }
 
 interface IProductDatabase {
-    fun readProduct(progressBar: ProgressBar, adapter: ProductAdapter): ArrayList<Product>
+    fun readProduct(progressBar: ProgressBar, adapter: ProductAdapter)
     fun writeProduct(product: Product)
 }

@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -17,6 +19,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.shop.R
 import com.shop.databinding.ActivityMainBinding
 import com.shop.firebase.UserDatabase
+import com.shop.models.Product
 import com.shop.models.User
 import com.shop.sort.Sorting
 import com.shop.ui.register.AuthActivity
@@ -114,7 +117,6 @@ class MainActivity : AppCompatActivity() {
     //Просто устанавливается экран с каталогом и если backStack пуст(а он пуст),
     // то приложение сворачивается
     override fun onBackPressed() {
-        super.onBackPressed()
         changeCurrentNavItem(binding.navShop)
     }
 
@@ -200,7 +202,7 @@ class MainActivity : AppCompatActivity() {
             //Функция для клика
             override fun onItemSelected(
                 parent: AdapterView<*>?,
-                itemSelected: View?, selectedItemPosition: Int, selectedId: Long
+                itemSelected: View?, selectedItemPosition: Int, selectedId: Long,
             ) {
 
                 // Получаем все элементы из спиннера
@@ -212,22 +214,26 @@ class MainActivity : AppCompatActivity() {
                 //Сравниваем значения полученное при нажатии с каждым элементом спинера
                 when (text) {
                     sortName[0] -> {
-                        s.sortName()
+                        Product.products = s.sortName(Product.products).toMutableList()
                         //Возможно понадобиться эта функция
                         //startActivity(Intent(this, BarsikActivity::class.java))
                     }
                     sortName[1] -> {
-                        s.sortNameDec()
+                        Product.products = s.sortNameDec(Product.products).toMutableList()
                     }
                     sortName[2] -> {
-                        s.sortPrice()
+                        Product.products = s.sortPrice(Product.products).toMutableList()
                     }
                     sortName[3] -> {
-                        s.sorPriceDec()
+                        Product.products = s.sorPriceDec(Product.products).toMutableList()
                     }
                 }
 
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainerView, ShopFragment())
+                    .commit()
             }
+
             //Используется, когда ни на что не кликнули
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
