@@ -1,4 +1,4 @@
-package com.shop.models
+package com.shop.domain.models
 
 //Класс хранит информацию о конкретном товаре
 data class Product(val id: String = "",
@@ -7,9 +7,4 @@ data class Product(val id: String = "",
                    val description: String = "",
                    val photo: String = "",
                    val price: Float = -1f,
-                   val title: String = "") {
-
-    companion object {
-        var products: MutableList<Product> = mutableListOf()
-    }
-}
+                   val title: String = "")

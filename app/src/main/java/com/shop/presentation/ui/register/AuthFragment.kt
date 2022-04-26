@@ -1,4 +1,4 @@
-package com.shop.ui.register
+package com.shop.presentation.ui.register
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +8,17 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.shop.R
 import com.shop.databinding.FragmentAuthBinding
+import com.shop.domain.firebase.BooleanCallback
+import com.shop.presentation.ui.register.viewmodel.AuthFragmentViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AuthFragment : Fragment() {
 
     //Во фрагменте binding создается немного иным способом
     private var _binding: FragmentAuthBinding? = null
     private val binding get() = _binding!!
+
+    private val vm by viewModel<AuthFragmentViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,10 +65,19 @@ class AuthFragment : Fragment() {
                 binding.mail.text.isNotEmpty() &&
                         binding.pwd.text.isNotEmpty() -> {
                     //Вызывается метод авторизации
-                    (requireContext() as AuthActivity).userDatabase.signIn(binding.mail.text.toString(),
-                        binding.pwd.text.toString(), requireActivity())
-                    //Меняется текущее activity
-                    (requireContext() as AuthActivity).setActivity()
+                    vm.auth(binding.mail.text.toString(),
+                        binding.pwd.text.toString(),
+                        object : BooleanCallback {
+                            override fun onCallback(status: Boolean) {
+                                //Меняется текущее activity
+                                if (status) {
+                                    (requireContext() as AuthActivity).setActivity()
+                                } else Toast.makeText(requireContext(),
+                                    "Неверный логин или пароль",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                        })
+
                 }
             }
         }

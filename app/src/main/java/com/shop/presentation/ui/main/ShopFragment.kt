@@ -1,29 +1,33 @@
-package com.shop.ui.main
+package com.shop.presentation.ui.main
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.shop.R
-import com.shop.adapters.ProductAdapter
 import com.shop.databinding.FragmentShopBinding
-import com.shop.firebase.IProductDatabase
-import com.shop.firebase.ProductDatabase
+import com.shop.domain.models.Product
+import com.shop.domain.models.ProductArray
+import com.shop.presentation.adapters.ProductAdapter
+import com.shop.presentation.ui.main.viewmodel.MainActivityViewModel
 
 class ShopFragment : Fragment() {
     private var _binding: FragmentShopBinding? = null
     private val binding get() = _binding!!
 
-    //Хранит ссылку на обхект для работы с БД
-    //Работает с товарами
-    private var productDatabase: IProductDatabase = ProductDatabase.instance()
+    private var productArray: ProductArray = ProductArray(mutableListOf<Product>())
 
-    private lateinit var productAdapter: ProductAdapter
+    private var productAdapter: ProductAdapter = ProductAdapter(productArray)
+
+    private val activityVM by activityViewModels<MainActivityViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +38,7 @@ class ShopFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -45,31 +50,25 @@ class ShopFragment : Fragment() {
             }
         }
 
+        activityVM.productsLiveData.observe(requireActivity()) {
+            productArray.products.clear()
+            productArray.products.addAll(it.products)
+            productAdapter.notifyDataSetChanged()
+            Log.d(TAG, productArray.products.toString())
+        }
+
+        //Получение всех товаров
+        activityVM.getProducts()
+
         //Менеджер и адаптер привязывается к RecyclerView
         binding.productRecyclerView.layoutManager = gridLayoutManager
         binding.productRecyclerView.adapter = productAdapter
         setCategoryClick()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        productAdapter = ProductAdapter()
-    }
-
-    override fun onStart() {
-        //Получение всех товаров
-        productDatabase.readProduct(binding.progressBar, productAdapter)
-        super.onStart()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun notifyProductAdapterChange() {
-        productAdapter.notifyDataSetChanged()
     }
 
     //Обработка кликов сортировки по категориям

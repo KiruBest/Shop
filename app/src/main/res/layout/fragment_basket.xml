@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/fragment_margin_top_scroll"
-    tools:context=".ui.main.BasketFragment">
+    tools:context=".presentation.ui.main.BasketFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

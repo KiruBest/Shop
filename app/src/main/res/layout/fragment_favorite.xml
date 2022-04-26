@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/fragment_margin_top_scroll"
-    tools:context=".ui.main.FavoriteFragment">
+    tools:context=".presentation.ui.main.FavoriteFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

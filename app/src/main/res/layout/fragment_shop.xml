@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/fragment_margin_top_scroll"
     android:orientation="vertical"
-    tools:context=".ui.main.ShopFragment">
+    tools:context=".presentation.ui.main.ShopFragment">
 
     <LinearLayout
         android:id="@+id/category_layout"

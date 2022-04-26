@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/shopFragment"
-        android:name="com.shop.ui.main.ShopFragment"
+        android:name="com.shop.presentation.ui.main.ShopFragment"
         android:label="fragment_shop"
         tools:layout="@layout/fragment_shop">
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/basketFragment"
-        android:name="com.shop.ui.main.BasketFragment"
+        android:name="com.shop.presentation.ui.main.BasketFragment"
         android:label="fragment_basket"
         tools:layout="@layout/fragment_basket" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.shop.ui.main.FavoriteFragment"
+        android:name="com.shop.presentation.ui.main.FavoriteFragment"
         android:label="fragment_favorite"
         tools:layout="@layout/fragment_favorite" />
 </navigation>

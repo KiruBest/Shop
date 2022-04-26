@@ -1,9 +1,11 @@
-package com.shop.ui.main
+package com.shop.presentation.ui.main
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,26 +18,28 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.shop.R
 import com.shop.databinding.ActivityMainBinding
-import com.shop.firebase.UserDatabase
-import com.shop.models.Product
-import com.shop.models.User
-import com.shop.sort.Sorting
-import com.shop.ui.register.AuthActivity
+import com.shop.domain.models.CurrentUser
+import com.shop.presentation.ui.main.viewmodel.MainActivityViewModel
+import com.shop.presentation.ui.register.AuthActivity
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : AppCompatActivity() {
-    //Хранится ссылка на объект, который работает с Firebase, скорее всего так лучше не делать
-    val userDatabase = UserDatabase.instance()
-
     //binding используется для тогоо, чтобы убрать необходимость инициализировать View в коде
     private lateinit var binding: ActivityMainBinding
+
+    private val vm by viewModel<MainActivityViewModel>()
 
     //Здесь хранится текущий и предыдущий пункт меню
     private lateinit var currentNav: TextView
     private lateinit var previousNav: TextView
+
+    private lateinit var currentUser: CurrentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
     //Таким образом в actionBar добавляется меню
     //Т.е. Чат, профиль и пункты по нажатию на фото профиля
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
@@ -70,9 +74,8 @@ class MainActivity : AppCompatActivity() {
     //Этот метод также вызывается с помощью другого метода invalidateOptionsMenu()
     //Применение этого метода в классе UserDatabase
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        Glide.with(this).asDrawable().load(User.currentUser?.photo.toString())
-            .override(100)
-            .into(object : CustomTarget<Drawable>() {
+        vm.currentUserLiveData.observe(this) {
+            Glide.with(this).asDrawable().load(currentUser.photo).into(object : CustomTarget<Drawable>(){
                 override fun onResourceReady(
                     resource: Drawable,
                     transition: Transition<in Drawable>?,
@@ -81,9 +84,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
-                    //Хз нафиг оно надо
+                    TODO("Not yet implemented")
                 }
+
             })
+        }
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -92,19 +97,19 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.profile -> {
                 //TODO(Переход на страницу профиля)
-                Toast.makeText(
-                    this,
-                    "${User.currentUser?.photo}, ${User.currentUser?.email}",
-                    Toast.LENGTH_SHORT
-                )
+                Toast.makeText(this, Firebase.auth.currentUser?.uid.toString(), Toast.LENGTH_SHORT)
                     .show()
             }
 
             //Выход из аккаунта
             R.id.sign_out -> {
-                userDatabase.signOut()
-                startActivity(Intent(this, AuthActivity::class.java))
-                finish()
+                vm.booleanLiveData.observe(this) {
+                    if (it) {
+                        startActivity(Intent(this, AuthActivity::class.java))
+                    }
+                }
+
+                vm.signOut()
             }
             R.id.chat -> {
                 //TODO(Тут реализовать чат)
@@ -121,8 +126,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUser() {
+        vm.currentUserLiveData.observe(this) {
+            currentUser = it
+            invalidateOptionsMenu()
+            Log.d(TAG, currentUser.toString())
+        }
         //Поиск текущего пользователя в БД
-        userDatabase.readCurrentUser(userDatabase.auth?.currentUser?.uid.toString(), this)
+        vm.getCurrentUser()
     }
 
     private fun initToolbar() {
@@ -204,34 +214,24 @@ class MainActivity : AppCompatActivity() {
                 parent: AdapterView<*>?,
                 itemSelected: View?, selectedItemPosition: Int, selectedId: Long,
             ) {
-
                 // Получаем все элементы из спиннера
                 val sortName = resources.getStringArray(R.array.sort_category)
                 //Получаем текст из нажатого textview
-                val text: String = binding.sortSpinner.selectedItem.toString()
-                val s = Sorting()
-
                 //Сравниваем значения полученное при нажатии с каждым элементом спинера
-                when (text) {
+                when (binding.sortSpinner.selectedItem.toString()) {
                     sortName[0] -> {
-                        Product.products = s.sortName(Product.products).toMutableList()
-                        //Возможно понадобиться эта функция
-                        //startActivity(Intent(this, BarsikActivity::class.java))
+                        vm.sortByName()
                     }
                     sortName[1] -> {
-                        Product.products = s.sortNameDec(Product.products).toMutableList()
+                        vm.sortByNameDec()
                     }
                     sortName[2] -> {
-                        Product.products = s.sortPrice(Product.products).toMutableList()
+                        vm.sortPrice()
                     }
                     sortName[3] -> {
-                        Product.products = s.sorPriceDec(Product.products).toMutableList()
+                        vm.sortByPriceDec()
                     }
                 }
-
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView, ShopFragment())
-                    .commit()
             }
 
             //Используется, когда ни на что не кликнули

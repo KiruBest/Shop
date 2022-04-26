@@ -43,6 +43,25 @@ android {
 }
 
 dependencies {
+    def lifecycle_version = "2.5.0-alpha06"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    // Saved state module for ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+
+    //ViewModels delegation extentensions for activity
+    implementation 'androidx.activity:activity-ktx:1.4.0'
+
+    def koin_version = "3.1.6"
+    // Koin Core features
+    implementation "io.insert-koin:koin-core:$koin_version"
+    // Koin Test features
+    testImplementation "io.insert-koin:koin-test:$koin_version"
+    // Koin main features for Android
+    implementation "io.insert-koin:koin-android:$koin_version"
+
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
