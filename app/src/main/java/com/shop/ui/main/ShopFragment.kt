@@ -2,9 +2,11 @@ package com.shop.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -12,8 +14,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.shop.R
 import com.shop.adapters.ProductAdapter
 import com.shop.databinding.FragmentShopBinding
+import com.shop.firebase.GetProductCallback
 import com.shop.firebase.IProductDatabase
 import com.shop.firebase.ProductDatabase
+import com.shop.models.Product
 
 class ShopFragment : Fragment() {
     private var _binding: FragmentShopBinding? = null
@@ -23,7 +27,7 @@ class ShopFragment : Fragment() {
     //Работает с товарами
     private var productDatabase: IProductDatabase = ProductDatabase.instance()
 
-    private lateinit var productAdapter: ProductAdapter
+    val productAdapter = ProductAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +40,18 @@ class ShopFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRecyclerView()
+        setCategoryClick()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initRecyclerView() {
+        val progressBar = binding.progressBar
+        val productRecyclerView = binding.productRecyclerView
 
         //Grid layout позволяет располагать товары в 2 столбца
         val gridLayoutManager = object : GridLayoutManager(requireContext(), 2) {
@@ -46,30 +62,22 @@ class ShopFragment : Fragment() {
         }
 
         //Менеджер и адаптер привязывается к RecyclerView
-        binding.productRecyclerView.layoutManager = gridLayoutManager
-        binding.productRecyclerView.adapter = productAdapter
-        setCategoryClick()
-    }
+        productRecyclerView.layoutManager = gridLayoutManager
+        productRecyclerView.adapter = productAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        productAdapter = ProductAdapter()
-    }
+        progressBar.visibility = ProgressBar.VISIBLE
 
-    override fun onStart() {
         //Получение всех товаров
-        productDatabase.readProduct(binding.progressBar, productAdapter)
-        super.onStart()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun notifyProductAdapterChange() {
-        productAdapter.notifyDataSetChanged()
+        productDatabase.readProduct(object : GetProductCallback {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun callback(products: MutableList<Product>) {
+                Log.d("productArray", Product.products.toString())
+                Product.products = products
+                productAdapter.notifyDataSetChanged()
+                progressBar.visibility = ProgressBar.INVISIBLE
+                Log.d("productArray", Product.products.toString())
+            }
+        })
     }
 
     //Обработка кликов сортировки по категориям

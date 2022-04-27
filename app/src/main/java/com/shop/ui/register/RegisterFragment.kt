@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.shop.databinding.FragmentRegisterBinding
+import com.shop.firebase.BooleanAuthUserCallback
 
 class RegisterFragment : Fragment() {
     //Смотреть в AuthFragment
@@ -69,9 +70,21 @@ class RegisterFragment : Fragment() {
                     //Вызывается метод создания аккаунта
                     (requireContext() as AuthActivity).userDatabase
                         .createAccount(binding.mail.text.toString(),
-                            binding.pwd.text.toString(), requireActivity())
-                    //Окно регистрации меняется на предыдущее
-                    (requireContext() as AuthActivity).supportFragmentManager.popBackStack()
+                            binding.pwd.text.toString(), object : BooleanAuthUserCallback {
+                                override fun callback(status: Boolean) {
+                                    //Окно регистрации меняется на предыдущее
+                                    if (status) {
+                                        Toast.makeText(requireContext(),
+                                            "Регистрация прошла успешно",
+                                            Toast.LENGTH_SHORT).show()
+                                        (requireContext() as AuthActivity).supportFragmentManager.popBackStack()
+                                    } else {
+                                        Toast.makeText(requireContext(),
+                                            "Ошибка",
+                                            Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            })
                 }
             }
         }

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.shop.R
 import com.shop.databinding.FragmentAuthBinding
+import com.shop.firebase.BooleanAuthUserCallback
 
 class AuthFragment : Fragment() {
 
@@ -23,8 +24,8 @@ class AuthFragment : Fragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         //Привязывается действия по нажатию на кнопку
         setButtonClickListener()
     }
@@ -61,9 +62,19 @@ class AuthFragment : Fragment() {
                         binding.pwd.text.isNotEmpty() -> {
                     //Вызывается метод авторизации
                     (requireContext() as AuthActivity).userDatabase.signIn(binding.mail.text.toString(),
-                        binding.pwd.text.toString(), requireActivity())
-                    //Меняется текущее activity
-                    (requireContext() as AuthActivity).setActivity()
+                        binding.pwd.text.toString(), object : BooleanAuthUserCallback {
+                            override fun callback(status: Boolean) {
+                                //Меняется текущее activity
+                                if (status) {
+                                    Toast.makeText(requireContext(), "Успешно!", Toast.LENGTH_SHORT)
+                                        .show()
+                                    (requireContext() as AuthActivity).setActivity()
+                                } else {
+                                    Toast.makeText(requireContext(), "Неверные данные", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            }
+                        })
                 }
             }
         }

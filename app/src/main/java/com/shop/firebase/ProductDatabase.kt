@@ -1,44 +1,45 @@
 package com.shop.firebase
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.util.Log
-import android.widget.ProgressBar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.shop.adapters.ProductAdapter
 import com.shop.models.Product
 
 class ProductDatabase private constructor() : IProductDatabase {
+    private var cashProducts: MutableList<Product> = mutableListOf<Product>()
+
     //Добавление всех товаров из БД
     override fun readProduct(
-        progressBar: ProgressBar,
-        adapter: ProductAdapter,
+        callback: GetProductCallback,
     ) {
-        if (Product.products.size != 0) return
-        progressBar.visibility = ProgressBar.VISIBLE
+        if (cashProducts.isNotEmpty()) {
+            Log.d("cashProducts", cashProducts.toString())
+            callback.callback(cashProducts)
+            return
+        }
 
         Firebase.database.getReference("products")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+            .addValueEventListener(object : ValueEventListener {
 
-                @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    Product.products.clear()
+                    cashProducts.clear()
+
                     snapshot.children.forEach {
+                        Log.d("postSnapshot", it.toString())
                         val product = it.getValue(Product::class.java)
-                        Product.products.add(product!!)
+                        cashProducts.add(product!!)
                     }
-                    adapter.notifyDataSetChanged()
-                    progressBar.visibility = ProgressBar.INVISIBLE
+
+                    callback.callback(cashProducts)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
                 }
-
             })
     }
 
@@ -56,6 +57,10 @@ class ProductDatabase private constructor() : IProductDatabase {
 }
 
 interface IProductDatabase {
-    fun readProduct(progressBar: ProgressBar, adapter: ProductAdapter)
+    fun readProduct(callback: GetProductCallback)
     fun writeProduct(product: Product)
+}
+
+interface GetProductCallback {
+    fun callback(products: MutableList<Product>)
 }

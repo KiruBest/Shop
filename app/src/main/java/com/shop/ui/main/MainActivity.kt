@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,8 +17,11 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.shop.R
 import com.shop.databinding.ActivityMainBinding
+import com.shop.firebase.GetUserCallback
 import com.shop.firebase.UserDatabase
 import com.shop.models.Product
 import com.shop.models.User
@@ -27,8 +31,12 @@ import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 
 class MainActivity : AppCompatActivity() {
+    private val shopFragment by lazy { ShopFragment() }
+    private val basketFragment by lazy { BasketFragment() }
+    private val favoriteFragment by lazy { FavoriteFragment() }
+
     //Хранится ссылка на объект, который работает с Firebase, скорее всего так лучше не делать
-    val userDatabase = UserDatabase.instance()
+    private val userDatabase = UserDatabase.instance()
 
     //binding используется для тогоо, чтобы убрать необходимость инициализировать View в коде
     private lateinit var binding: ActivityMainBinding
@@ -61,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
     //Таким образом в actionBar добавляется меню
     //Т.е. Чат, профиль и пункты по нажатию на фото профиля
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
@@ -94,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 //TODO(Переход на страницу профиля)
                 Toast.makeText(
                     this,
-                    "${User.currentUser?.photo}, ${User.currentUser?.email}",
+                    User.currentUser?.toString(),
                     Toast.LENGTH_SHORT
                 )
                     .show()
@@ -122,7 +130,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUser() {
         //Поиск текущего пользователя в БД
-        userDatabase.readCurrentUser(userDatabase.auth?.currentUser?.uid.toString(), this)
+        userDatabase.readCurrentUser(Firebase.auth.currentUser?.uid.toString(),
+            object : GetUserCallback {
+                override fun callback(currentUser: User) {
+                    User.currentUser = currentUser
+                    invalidateOptionsMenu()
+                }
+            })
     }
 
     private fun initToolbar() {
@@ -137,6 +151,9 @@ class MainActivity : AppCompatActivity() {
         //Т.е. заполняется черным
         binding.navShop.isActivated = true
         currentNav = binding.navShop
+
+        supportFragmentManager.beginTransaction().add(R.id.fragmentContainerView, shopFragment)
+            .commit()
     }
 
     private fun initTopNav() {
@@ -172,9 +189,9 @@ class MainActivity : AppCompatActivity() {
 
         //В зависимости от текста на копке устанавливается нужный фрагмент
         when (textView.text) {
-            getString(R.string.catalog) -> fragment = ShopFragment()
-            getString(R.string.basket) -> fragment = BasketFragment()
-            getString(R.string.favorite) -> fragment = FavoriteFragment()
+            getString(R.string.catalog) -> fragment = shopFragment
+            getString(R.string.basket) -> fragment = basketFragment
+            getString(R.string.favorite) -> fragment = favoriteFragment
         }
 
         //Также как в AuthFragment производится смена fragment
@@ -186,7 +203,6 @@ class MainActivity : AppCompatActivity() {
 
     //Здесь для выпадающего списка по клику на Сотрировка создаются пункты
     //Возможно стоит переделать
-    //TODO(Пиши сортировку по названию и тп здесь)
     @SuppressLint("ResourceType", "UseCompatLoadingForDrawables")
     private fun initSortSpinner() {
         //Назначение адаптера - преобразовать один вид информации в другой,
@@ -200,11 +216,11 @@ class MainActivity : AppCompatActivity() {
         binding.sortSpinner.adapter = adapter
         binding.sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             //Функция для клика
+            @SuppressLint("NotifyDataSetChanged")
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 itemSelected: View?, selectedItemPosition: Int, selectedId: Long,
             ) {
-
                 // Получаем все элементы из спиннера
                 val sortName = resources.getStringArray(R.array.sort_category)
                 //Получаем текст из нажатого textview
@@ -215,8 +231,6 @@ class MainActivity : AppCompatActivity() {
                 when (text) {
                     sortName[0] -> {
                         Product.products = s.sortName(Product.products).toMutableList()
-                        //Возможно понадобиться эта функция
-                        //startActivity(Intent(this, BarsikActivity::class.java))
                     }
                     sortName[1] -> {
                         Product.products = s.sortNameDec(Product.products).toMutableList()
@@ -229,9 +243,9 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView, ShopFragment())
-                    .commit()
+                Log.d("categoryProducts", Product.products.toString())
+
+                shopFragment.productAdapter.notifyDataSetChanged()
             }
 
             //Используется, когда ни на что не кликнули

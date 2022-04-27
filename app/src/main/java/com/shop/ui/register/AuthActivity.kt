@@ -3,6 +3,8 @@ package com.shop.ui.register
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.shop.R
 import com.shop.databinding.ActivityAuthBinding
 import com.shop.firebase.IUserDatabase
@@ -27,7 +29,7 @@ class AuthActivity : AppCompatActivity() {
 
         //Если пользователь уже ранее вошел в аккаунт, то сразу запускается MainActivity
         //В Firebase есть объект auth, в котором хранится текущий пользователь
-        if (userDatabase.auth?.currentUser != null) setActivity()
+        if (Firebase.auth.currentUser != null) setActivity()
 
         //С помощью supportFragmentManager можно устанавливать фрагмент в fragmentContainerView
         //То есть можно во время работы приложения можно менять фрагменты с помощью beginTransaction
