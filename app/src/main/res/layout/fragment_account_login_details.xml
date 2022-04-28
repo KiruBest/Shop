@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/account_login_detaisl_rectangle"
+    android:orientation="vertical"
+    tools:context=".ui.personalaccount.AccountLoginDetails">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/warningTextView"
+        style="@style/fragment_account_login_details_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="center"
+        android:text="@string/warning_pa" />
+
+    <TextView
+        android:id="@+id/passwordTextView"
+        style="@style/fragment_personal_account_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/password_pa" />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        style="@style/edit_text_style"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/password_pa_hint" />
+
+    <TextView
+        android:id="@+id/numberPhoneTextView"
+        style="@style/fragment_personal_account_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/number_phone_pa" />
+
+    <EditText
+        android:id="@+id/numberPhoneEditText"
+        style="@style/edit_text_style"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/number_phone_pa_hint" />
+
+    <TextView
+        android:id="@+id/emailTextView"
+        style="@style/fragment_personal_account_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/email_pa" />
+
+    <EditText
+        android:id="@+id/emailEditText"
+        style="@style/edit_text_style"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/email_pa_hint" />
+
+
+</LinearLayout>

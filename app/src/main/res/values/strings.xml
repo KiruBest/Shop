@@ -11,6 +11,27 @@
     <string name="sign_out">Выйти</string>
     <string name="profile">Профиль</string>
     <string name="hello_text">Заходи\nНе задерживайся</string>
+    <string name="update_avatar">Обновить аватар</string>
+    <string name="login">Логин:</string>
+    <string name="login_hint">login</string>
+    <string name="fio">ФИО:</string>
+    <string name="fio_hint">Иванов Иван Иванович</string>
+    <string name="delivery_address">Адрес доставки:</string>
+    <string name="delivery_street_hint">Улица</string>
+    <string name="delivery_house_hint">Дом</string>
+    <string name="delivery_entrance_hint">Подъезд</string>
+    <string name="delivery_flat_hint">Квартира</string>
+    <string name="age">Возраст:</string>
+    <string name="age_hint">26</string>
+    <string name="save_change">Сохранить изменения</string>
+    <string name="account_login_details">Данные для входа в аккаунт</string>
+    <string name="warning_pa">Не передавайте данную информацию людям, которых не знаете лично, администрация никогда не будет спрашивать у вас пароль от аккаунта!</string>
+    <string name="password_pa">Пароль:</string>
+    <string name="password_pa_hint">Введите не менне 6 символов</string>
+    <string name="number_phone_pa">Номер телефона:</string>
+    <string name="number_phone_pa_hint">+79999999999</string>
+    <string name="email_pa">Адрес электронной почты:</string>
+    <string name="email_pa_hint">ivan.ivanovich@gmail.com</string>
 
     <string-array name="sort_category">
         <item>По названию (↑)</item>
