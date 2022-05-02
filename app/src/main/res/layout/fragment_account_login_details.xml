@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/fragment_margin_top_scroll"
     android:background="@drawable/account_login_detaisl_rectangle"
     android:orientation="vertical"
     tools:context=".ui.personalaccount.AccountLoginDetails">

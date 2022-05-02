@@ -21,7 +21,7 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </ScrollView>
 
     <androidx.appcompat.widget.Toolbar
@@ -51,11 +51,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:contentDescription="search"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_search_24"
-            android:contentDescription="search" />
+            app:srcCompat="@drawable/ic_baseline_search_24" />
 
         <EditText
             android:id="@+id/search"
@@ -63,6 +63,7 @@
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
+            android:autofillHints="no"
             android:background="@null"
             android:hint="@string/search"
             android:inputType="text"
@@ -70,8 +71,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="parent"
-            android:autofillHints="no" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -81,8 +81,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:weightSum="4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_layout">
@@ -91,45 +91,42 @@
         <TextView
             android:id="@+id/navShop"
             style="@style/nav_item"
-            android:layout_marginEnd="6dp"
             android:layout_weight="1"
             android:text="@string/catalog" />
 
         <TextView
             android:id="@+id/navFavorite"
             style="@style/nav_item"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="6dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:text="@string/favorite" />
 
         <TextView
             android:id="@+id/navBasket"
             style="@style/nav_item"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="6dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:text="@string/basket" />
 
         <TextView
             android:id="@+id/sort"
             style="@style/nav_item"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:text="@string/sort" />
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navView"
-        android:visibility="gone"
+        style="@style/nav_item"
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_layout_height"
         android:orientation="horizontal"
-        style="@style/nav_item"
+        android:visibility="gone"
+        app:itemActiveIndicatorStyle="@style/nav_item"
         app:itemBackground="@drawable/nav_rectangle_selector"
         app:itemShapeAppearance="@style/nav_item"
         app:itemTextColor="@color/nav_text_color"
-        app:itemActiveIndicatorStyle="@style/nav_item"
         app:labelVisibilityMode="labeled"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -147,5 +144,20 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/navLayout" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/buttonPlus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Move add activity"
+        android:src="@drawable/ic_baseline_add_24"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

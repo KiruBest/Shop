@@ -1,6 +1,7 @@
 package com.shop.ui.main
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import com.shop.firebase.GetProductCallback
 import com.shop.firebase.IProductDatabase
 import com.shop.firebase.ProductDatabase
 import com.shop.models.Product
+import com.shop.ui.productpage.ProductPageActivity
 
 class ShopFragment : Fragment() {
     private var _binding: FragmentShopBinding? = null
@@ -27,7 +29,15 @@ class ShopFragment : Fragment() {
     //Работает с товарами
     private var productDatabase: IProductDatabase = ProductDatabase.instance()
 
-    val productAdapter = ProductAdapter()
+    val productAdapter = ProductAdapter(object : ProductAdapter.OnItemClickListener {
+        override fun onItemClick(product: Product) {
+            val intent = Intent(requireContext(), ProductPageActivity::class.java)
+
+            intent.putExtra("product", product)
+
+            requireActivity().startActivity(intent)
+        }
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,7 +121,7 @@ class ShopFragment : Fragment() {
 
     private fun addProductCategory(textView: TextView) {
         when (textView.text) {
-            //TODO(Логика добавления товара категории) "" ->)
+
         }
     }
 

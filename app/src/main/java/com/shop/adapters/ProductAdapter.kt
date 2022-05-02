@@ -9,10 +9,11 @@ import com.shop.databinding.ProductCartBinding
 import com.shop.models.Product
 
 //Таким образом реализуются все Адаптеры
-class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductHolder>() {
+class ProductAdapter(private val onItemClickListener: OnItemClickListener) :
+    RecyclerView.Adapter<ProductAdapter.ProductHolder>() {
 
     //Объявляются необходимые view
-    class ProductHolder(binding: ProductCartBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ProductHolder(binding: ProductCartBinding) : RecyclerView.ViewHolder(binding.root) {
         val title = binding.title
         val price = binding.price
         val photo = binding.photo
@@ -35,6 +36,10 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductHolder>() {
             .load(Product.products[position].photo)
             .into(holder.photo)
 
+        holder.itemView.setOnClickListener {
+            onItemClickListener.onItemClick(Product.products[position])
+        }
+
         holder.basketButton.setOnClickListener {
             //TODO(Клик на добавление в корзину)
         }
@@ -46,4 +51,8 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductHolder>() {
     }
 
     override fun getItemCount(): Int = Product.products.size
+
+    interface OnItemClickListener {
+        fun onItemClick(product: Product)
+    }
 }

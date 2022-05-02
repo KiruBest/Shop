@@ -11,8 +11,8 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -23,9 +23,14 @@ import com.shop.R
 import com.shop.databinding.ActivityMainBinding
 import com.shop.firebase.GetUserCallback
 import com.shop.firebase.UserDatabase
+import com.shop.models.BasketProduct
+import com.shop.models.FavoriteProduct
 import com.shop.models.Product
 import com.shop.models.User
 import com.shop.sort.Sorting
+import com.shop.ui.admin.ADMIN_ID
+import com.shop.ui.admin.AddProductActivity
+import com.shop.ui.personalaccount.PersonalAccount
 import com.shop.ui.register.AuthActivity
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
@@ -36,13 +41,13 @@ class MainActivity : AppCompatActivity() {
     private val favoriteFragment by lazy { FavoriteFragment() }
 
     //Хранится ссылка на объект, который работает с Firebase, скорее всего так лучше не делать
-    private val userDatabase = UserDatabase.instance()
+    val userDatabase = UserDatabase.instance()
 
     //binding используется для тогоо, чтобы убрать необходимость инициализировать View в коде
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     //Здесь хранится текущий и предыдущий пункт меню
-    private lateinit var currentNav: TextView
+    private var currentNav: TextView? = null
     private lateinit var previousNav: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +58,8 @@ class MainActivity : AppCompatActivity() {
         //Инициализация текущего пользователя, ниже будет подробнее
         initUser()
 
+        if (Firebase.auth.currentUser?.uid == ADMIN_ID) binding.buttonPlus.isVisible = true
+
         //Инициализация actionBar и ShopFragment
         initToolbar()
         initFirstFragment()
@@ -62,6 +69,8 @@ class MainActivity : AppCompatActivity() {
 
         //Здесь теоретически будут пункты сортировки, но я думаю надо будет сделать по-другому
         initSortSpinner()
+
+        initAddProduct()
 
         //Это просто для красоты, добавляется overscroll
         OverScrollDecoratorHelper.setUpOverScroll(binding.scrollView)
@@ -99,13 +108,9 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.profile -> {
-                //TODO(Переход на страницу профиля)
-                Toast.makeText(
-                    this,
-                    User.currentUser?.toString(),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+                deleteCurrentNavMenu()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainerView, PersonalAccount()).commit()
             }
 
             //Выход из аккаунта
@@ -178,14 +183,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initAddProduct() {
+        binding.buttonPlus.setOnClickListener {
+            startActivity(Intent(this, AddProductActivity::class.java))
+        }
+    }
+
     //Логика смены страниц
     private fun changeCurrentNavItem(textView: TextView) {
         if (currentNav == textView) return
+
+        if (currentNav == null) {
+            currentNav = textView
+        }
+
         var fragment: Fragment? = null
-        previousNav = currentNav
+        previousNav = currentNav!!
         currentNav = textView
         previousNav.isActivated = false
-        currentNav.isActivated = true
+        currentNav?.isActivated = true
 
         //В зависимости от текста на копке устанавливается нужный фрагмент
         when (textView.text) {
@@ -199,6 +215,11 @@ class MainActivity : AppCompatActivity() {
             .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_right)
             .replace(R.id.fragmentContainerView, fragment!!)
             .commit()
+    }
+
+    private fun deleteCurrentNavMenu() {
+        currentNav?.isActivated = false
+        currentNav = null
     }
 
     //Здесь для выпадающего списка по клику на Сотрировка создаются пункты
@@ -231,15 +252,23 @@ class MainActivity : AppCompatActivity() {
                 when (text) {
                     sortName[0] -> {
                         Product.products = s.sortName(Product.products).toMutableList()
+                        BasketProduct.products = s.sortName(BasketProduct.products).toMutableList()
+                        FavoriteProduct.products = s.sortName(FavoriteProduct.products).toMutableList()
                     }
                     sortName[1] -> {
                         Product.products = s.sortNameDec(Product.products).toMutableList()
+                        BasketProduct.products = s.sortNameDec(BasketProduct.products).toMutableList()
+                        FavoriteProduct.products = s.sortNameDec(FavoriteProduct.products).toMutableList()
                     }
                     sortName[2] -> {
                         Product.products = s.sortPrice(Product.products).toMutableList()
+                        BasketProduct.products = s.sortPrice(BasketProduct.products).toMutableList()
+                        FavoriteProduct.products = s.sortPrice(FavoriteProduct.products).toMutableList()
                     }
                     sortName[3] -> {
-                        Product.products = s.sorPriceDec(Product.products).toMutableList()
+                        Product.products = s.sortPriceDec(Product.products).toMutableList()
+                        BasketProduct.products = s.sortPriceDec(BasketProduct.products).toMutableList()
+                        FavoriteProduct.products = s.sortPriceDec(FavoriteProduct.products).toMutableList()
                     }
                 }
 

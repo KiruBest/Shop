@@ -1,13 +1,21 @@
 package com.shop.firebase
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.net.Uri
 import android.util.Log
+import com.google.android.gms.tasks.Continuation
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import com.shop.models.Product
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ProductDatabase private constructor() : IProductDatabase {
     private var cashProducts: MutableList<Product> = mutableListOf<Product>()
@@ -43,8 +51,42 @@ class ProductDatabase private constructor() : IProductDatabase {
             })
     }
 
-    override fun writeProduct(product: Product) {
-        TODO("Not yet implemented")
+    @SuppressLint("SimpleDateFormat")
+    override fun writeProduct(product: Product, imageUri: Uri, callback: WriteProductCallback) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.getReference("product_photo")
+
+        val currentTime =
+            SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(Calendar.getInstance().time)
+        val key = currentTime.toString()
+
+        val filePath: StorageReference = storageRef.child("${imageUri.lastPathSegment}${key}.webm")
+
+        try {
+            val uploadTask: UploadTask = filePath.putFile(imageUri)
+
+            uploadTask.addOnFailureListener {
+                Log.d("uploadInStorageError", it.stackTraceToString())
+            }
+                .addOnSuccessListener {
+                    Log.d("successful", "Successful")
+
+                    uploadTask.continueWithTask(Continuation {
+                        return@Continuation filePath.downloadUrl
+                    }).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Log.d("successful", "Successful")
+                            product.photo = it.result.toString()
+                            Firebase.database.reference.child("products")
+                                .child("${product.title}$key").setValue(product)
+
+                            callback.callback(true)
+                        }
+                    }
+                }
+        } catch (e: Exception) {
+            Log.d("download", e.stackTraceToString())
+        }
     }
 
     companion object {
@@ -58,9 +100,13 @@ class ProductDatabase private constructor() : IProductDatabase {
 
 interface IProductDatabase {
     fun readProduct(callback: GetProductCallback)
-    fun writeProduct(product: Product)
+    fun writeProduct(product: Product, imageUri: Uri, callback: WriteProductCallback)
 }
 
 interface GetProductCallback {
     fun callback(products: MutableList<Product>)
+}
+
+interface WriteProductCallback {
+    fun callback(status: Boolean)
 }
