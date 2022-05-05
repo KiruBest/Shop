@@ -4,13 +4,16 @@ import android.os.Parcel
 import android.os.Parcelable
 
 //Класс хранит информацию о конкретном товаре
-data class Product(val id: String = "",
-                   val brand: Int = -1,
-                   val category: Int = -1,
-                   val description: String = "",
-                   var photo: String = "",
-                   val price: Float = -1f,
-                   val title: String = ""): Parcelable {
+data class Product(
+    var id: String = "",
+    val brand: Int = -1,
+    val category: Int = -1,
+    val description: String = "",
+    var photo: String = "",
+    val price: Float = -1f,
+    val title: String = "",
+    var count: Int = 1,
+) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -19,8 +22,9 @@ data class Product(val id: String = "",
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readFloat(),
-        parcel.readString()!!) {
-    }
+        parcel.readString()!!,
+        parcel.readInt()
+    )
 
     override fun describeContents(): Int {
         return 0
@@ -34,6 +38,7 @@ data class Product(val id: String = "",
         p0?.writeString(photo)
         p0?.writeFloat(price)
         p0?.writeString(title)
+        p0?.writeInt(count)
     }
 
     companion object CREATOR : Parcelable.Creator<Product> {

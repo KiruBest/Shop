@@ -2,7 +2,6 @@ package com.shop.ui.productpage
 
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.shop.R
@@ -18,7 +17,7 @@ class ProductPageActivity : AppCompatActivity() {
         binding = ActivityProductPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val product: Product = intent.getParcelableExtra<Product>("product")!!
+        val product: Product = intent.getParcelableExtra("product")!!
         Log.d("productPage", product.toString())
 
         binding.mainToolbar.title = product.title
@@ -31,7 +30,8 @@ class ProductPageActivity : AppCompatActivity() {
         Glide.with(this).load(product.photo).into(binding.productPhoto)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 }

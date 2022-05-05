@@ -30,13 +30,13 @@
         android:layout_height="130dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
+        android:contentDescription="photo"
         android:fitsSystemWindows="true"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/toolbar_gradient"
-        android:contentDescription="photo" />
+        tools:srcCompat="@drawable/toolbar_gradient" />
 
     <ImageView
         android:id="@+id/basket_image"
@@ -44,11 +44,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:clickable="true"
+        android:contentDescription="@string/basket"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photo"
-        app:srcCompat="@drawable/ic_baseline_shopping_basket_20"
-        android:contentDescription="@string/basket" />
+        app:srcCompat="@drawable/selector_basket_button"
+        app:tint="@color/black" />
 
     <ImageView
         android:id="@+id/star"
@@ -56,13 +57,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:clickable="true"
+        android:contentDescription="star"
         android:focusable="true"
         app:layout_constraintEnd_toStartOf="@+id/basket_image"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/photo"
         app:srcCompat="@drawable/ic_baseline_star_20"
-        app:tint="@color/favorite_add_color_changer"
-        android:contentDescription="star" />
+        app:tint="@color/favorite_add_color_changer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

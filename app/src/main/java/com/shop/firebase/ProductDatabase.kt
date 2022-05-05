@@ -39,6 +39,7 @@ class ProductDatabase private constructor() : IProductDatabase {
                     snapshot.children.forEach {
                         Log.d("postSnapshot", it.toString())
                         val product = it.getValue(Product::class.java)
+                        product?.id = it.key!!
                         cashProducts.add(product!!)
                     }
 
@@ -52,7 +53,7 @@ class ProductDatabase private constructor() : IProductDatabase {
     }
 
     @SuppressLint("SimpleDateFormat")
-    override fun writeProduct(product: Product, imageUri: Uri, callback: WriteProductCallback) {
+    override fun writeProduct(product: Product, imageUri: Uri, callback: BooleanProductCallback) {
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.getReference("product_photo")
 
@@ -89,6 +90,61 @@ class ProductDatabase private constructor() : IProductDatabase {
         }
     }
 
+    override fun addToBasket(productID: String, uid: String, count: Int) {
+        Firebase.database.reference.child("basket").child("${uid}_${productID}")
+            .setValue(count)
+    }
+
+    override fun getFromBasket(uid: String, callback: GetProductCallback) {
+        val basketProducts = mutableListOf<Product>()
+
+        Firebase.database.getReference("basket")
+            .addValueEventListener(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    basketProducts.clear()
+
+                    snapshot.children.forEach { basketProduct ->
+                        cashProducts.forEach { product ->
+                            if (basketProduct.key == "${uid}_${product.id}") {
+                                product.count = basketProduct.value.toString().toInt()
+                                basketProducts.add(product)
+                            }
+                        }
+                    }
+
+                    callback.callback(basketProducts)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
+                }
+            })
+    }
+
+    override fun dropProductFromBasket(
+        uid: String,
+        productID: String,
+        callback: BooleanProductCallback,
+    ) {
+        Firebase.database.getReference("basket")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { basketProduct ->
+                        if (basketProduct.key == "${uid}_${productID}") basketProduct.ref.removeValue()
+                    }
+
+                    callback.callback(true)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
+                    callback.callback(false)
+                }
+            })
+    }
+
     companion object {
         private var productDatabase: IProductDatabase? = null
         fun instance(): IProductDatabase {
@@ -100,13 +156,16 @@ class ProductDatabase private constructor() : IProductDatabase {
 
 interface IProductDatabase {
     fun readProduct(callback: GetProductCallback)
-    fun writeProduct(product: Product, imageUri: Uri, callback: WriteProductCallback)
+    fun writeProduct(product: Product, imageUri: Uri, callback: BooleanProductCallback)
+    fun addToBasket(productID: String, uid: String, count: Int)
+    fun getFromBasket(uid: String, callback: GetProductCallback)
+    fun dropProductFromBasket(uid: String, productID: String, callback: BooleanProductCallback)
 }
 
 interface GetProductCallback {
     fun callback(products: MutableList<Product>)
 }
 
-interface WriteProductCallback {
+interface BooleanProductCallback {
     fun callback(status: Boolean)
 }

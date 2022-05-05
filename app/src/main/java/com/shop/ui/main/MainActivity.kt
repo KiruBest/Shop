@@ -22,6 +22,7 @@ import com.google.firebase.ktx.Firebase
 import com.shop.R
 import com.shop.databinding.ActivityMainBinding
 import com.shop.firebase.GetUserCallback
+import com.shop.firebase.ProductDatabase
 import com.shop.firebase.UserDatabase
 import com.shop.models.BasketProduct
 import com.shop.models.FavoriteProduct
@@ -36,9 +37,11 @@ import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 
 class MainActivity : AppCompatActivity() {
-    private val shopFragment by lazy { ShopFragment() }
-    private val basketFragment by lazy { BasketFragment() }
-    private val favoriteFragment by lazy { FavoriteFragment() }
+    private lateinit var shopFragment: ShopFragment
+    private lateinit var basketFragment: BasketFragment
+    private lateinit var favoriteFragment: FavoriteFragment
+
+    private val productDatabase = ProductDatabase.instance()
 
     //Хранится ссылка на объект, который работает с Firebase, скорее всего так лучше не делать
     val userDatabase = UserDatabase.instance()
@@ -58,10 +61,11 @@ class MainActivity : AppCompatActivity() {
         //Инициализация текущего пользователя, ниже будет подробнее
         initUser()
 
-        if (Firebase.auth.currentUser?.uid == ADMIN_ID) binding.buttonPlus.isVisible = true
-
         //Инициализация actionBar и ShopFragment
         initToolbar()
+
+        initFragments()
+
         initFirstFragment()
 
         //Создается навигация по верхним кнопкам
@@ -134,6 +138,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUser() {
+        if (Firebase.auth.currentUser?.uid == ADMIN_ID) binding.buttonPlus.isVisible = true
+
         //Поиск текущего пользователя в БД
         userDatabase.readCurrentUser(Firebase.auth.currentUser?.uid.toString(),
             object : GetUserCallback {
@@ -151,13 +157,27 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.mainToolbar)
     }
 
+    private fun initFragments() {
+        basketFragment = BasketFragment()
+
+        favoriteFragment = FavoriteFragment()
+
+        shopFragment = ShopFragment()
+    }
+
     private fun initFirstFragment() {
         //При открытии приложения каталог устанавливается выбранным
         //Т.е. заполняется черным
         binding.navShop.isActivated = true
         currentNav = binding.navShop
 
-        supportFragmentManager.beginTransaction().add(R.id.fragmentContainerView, shopFragment)
+        supportFragmentManager.beginTransaction().add(R.id.fragmentContainerView, basketFragment)
+            .commit()
+
+        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, favoriteFragment)
+            .commit()
+
+        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, shopFragment)
             .commit()
     }
 
@@ -248,33 +268,74 @@ class MainActivity : AppCompatActivity() {
                 val text: String = binding.sortSpinner.selectedItem.toString()
                 val s = Sorting()
 
+                var temps: MutableList<Product>
+
                 //Сравниваем значения полученное при нажатии с каждым элементом спинера
                 when (text) {
                     sortName[0] -> {
-                        Product.products = s.sortName(Product.products).toMutableList()
-                        BasketProduct.products = s.sortName(BasketProduct.products).toMutableList()
-                        FavoriteProduct.products = s.sortName(FavoriteProduct.products).toMutableList()
+                        temps = s.sortName(Product.products).toMutableList()
+                        Product.products.clear()
+                        Product.products.addAll(temps)
+                        shopFragment.productAdapter.notifyDataSetChanged()
+
+                        temps = s.sortName(BasketProduct.products).toMutableList()
+                        BasketProduct.products.clear()
+                        BasketProduct.products.addAll(temps)
+                        basketFragment.adapter.notifyDataSetChanged()
+
+                        temps = s.sortName(FavoriteProduct.products).toMutableList()
+                        FavoriteProduct.products.clear()
+                        FavoriteProduct.products.addAll(temps)
                     }
                     sortName[1] -> {
-                        Product.products = s.sortNameDec(Product.products).toMutableList()
-                        BasketProduct.products = s.sortNameDec(BasketProduct.products).toMutableList()
-                        FavoriteProduct.products = s.sortNameDec(FavoriteProduct.products).toMutableList()
+                        temps = s.sortNameDec(Product.products).toMutableList()
+                        Product.products.clear()
+                        Product.products.addAll(temps)
+                        shopFragment.productAdapter.notifyDataSetChanged()
+
+                        temps = s.sortNameDec(BasketProduct.products).toMutableList()
+                        BasketProduct.products.clear()
+                        BasketProduct.products.addAll(temps)
+                        basketFragment.adapter.notifyDataSetChanged()
+
+                        temps = s.sortNameDec(FavoriteProduct.products).toMutableList()
+                        FavoriteProduct.products.clear()
+                        FavoriteProduct.products.addAll(temps)
                     }
                     sortName[2] -> {
-                        Product.products = s.sortPrice(Product.products).toMutableList()
-                        BasketProduct.products = s.sortPrice(BasketProduct.products).toMutableList()
-                        FavoriteProduct.products = s.sortPrice(FavoriteProduct.products).toMutableList()
+                        temps = s.sortPrice(Product.products).toMutableList()
+                        Product.products.clear()
+                        Product.products.addAll(temps)
+                        shopFragment.productAdapter.notifyDataSetChanged()
+
+                        temps = s.sortPrice(BasketProduct.products).toMutableList()
+                        BasketProduct.products.clear()
+                        BasketProduct.products.addAll(temps)
+                        basketFragment.adapter.notifyDataSetChanged()
+
+                        temps = s.sortPrice(FavoriteProduct.products).toMutableList()
+                        FavoriteProduct.products.clear()
+                        FavoriteProduct.products.addAll(temps)
                     }
                     sortName[3] -> {
-                        Product.products = s.sortPriceDec(Product.products).toMutableList()
-                        BasketProduct.products = s.sortPriceDec(BasketProduct.products).toMutableList()
-                        FavoriteProduct.products = s.sortPriceDec(FavoriteProduct.products).toMutableList()
+                        temps = s.sortPriceDec(Product.products).toMutableList()
+                        Product.products.clear()
+                        Product.products.addAll(temps)
+                        shopFragment.productAdapter.notifyDataSetChanged()
+
+                        temps = s.sortPriceDec(BasketProduct.products).toMutableList()
+                        BasketProduct.products.clear()
+                        BasketProduct.products.addAll(temps)
+                        basketFragment.adapter.notifyDataSetChanged()
+
+                        temps = s.sortPriceDec(FavoriteProduct.products).toMutableList()
+                        FavoriteProduct.products.clear()
+                        FavoriteProduct.products.addAll(temps)
                     }
                 }
 
                 Log.d("categoryProducts", Product.products.toString())
-
-                shopFragment.productAdapter.notifyDataSetChanged()
+                Log.d("categoryProducts", BasketProduct.products.toString())
             }
 
             //Используется, когда ни на что не кликнули

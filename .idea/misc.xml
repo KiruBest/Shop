@@ -18,6 +18,7 @@
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/register_rectangle.xml" value="0.2405" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/search.xml" value="0.168" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/search_drawable.xml" value="0.106" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/selector_basket_button.xml" value="0.2315" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/toolbar_gradient.xml" value="0.168" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/toolbar_gradient_auth.xml" value="0.242" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout-v28/activity_auth.xml" value="0.25" />
@@ -35,7 +36,8 @@
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_product_page.xml" value="0.24139492753623187" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_register.xml" value="0.25" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_shop.xml" value="0.264" />
-        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/product_cart.xml" value="0.1" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/layout_basket_product_item.xml" value="0.24139492753623187" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/product_cart.xml" value="0.264" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/sort_spinner_layout.xml" value="0.25" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/menu/account_menu.xml" value="0.25" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/menu/main_toolbar_menu.xml" value="0.234375" />

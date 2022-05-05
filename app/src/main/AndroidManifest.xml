@@ -16,12 +16,10 @@
         tools:targetApi="m">
         <activity
             android:name=".ui.admin.AddProductActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.main.MainActivity" />
+            android:exported="false" />
         <activity
             android:name=".ui.productpage.ProductPageActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.main.MainActivity" />
+            android:exported="false" />
         <activity
             android:name=".ui.register.AuthActivity"
             android:exported="true"

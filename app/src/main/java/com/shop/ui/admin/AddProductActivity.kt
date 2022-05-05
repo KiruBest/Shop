@@ -16,4 +16,9 @@ class AddProductActivity : AppCompatActivity() {
         binding = ActivityAddProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
 }
