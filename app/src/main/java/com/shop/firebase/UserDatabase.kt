@@ -1,13 +1,18 @@
 package com.shop.firebase
 
 import android.content.ContentValues.TAG
+import android.net.Uri
 import android.util.Log
+import com.google.android.gms.tasks.Continuation
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import com.shop.models.User
 
 class UserDatabase private constructor() : IUserDatabase {
@@ -79,6 +84,39 @@ class UserDatabase private constructor() : IUserDatabase {
             }
     }
 
+    override fun saveProfilePhoto(uid: String, currentUserPhoto: Uri, urlReturnCallback: UrlReturnCallback) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.getReference("user_photo")
+        val downloadImageUri: StorageReference = storageRef.child("${uid}_photo.webm")
+        var url: String
+
+        val uploadTask: UploadTask = downloadImageUri.putFile(currentUserPhoto)
+
+        try {
+            uploadTask
+                .addOnFailureListener {
+                    Log.d("uploadInStorageError", it.stackTraceToString())
+                }
+                .addOnSuccessListener {
+                    Log.d("successful", "Successful")
+
+                    uploadTask.continueWithTask(Continuation {
+                        return@Continuation downloadImageUri.downloadUrl
+                    }).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Log.d("successful", "Successful")
+
+                            url = it.result.toString()
+
+                            urlReturnCallback.callback(url)
+                        }
+                    }
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     companion object {
         //Типа singleton
         private var userDatabase: IUserDatabase? = null
@@ -95,6 +133,7 @@ interface IUserDatabase {
     fun readCurrentUser(uid: String, callback: GetUserCallback)
     fun signIn(email: String, password: String, callback: BooleanAuthUserCallback)
     fun createAccount(email: String, password: String, callback: BooleanAuthUserCallback)
+    fun saveProfilePhoto(uid: String, currentUserPhoto: Uri, urlReturnCallback: UrlReturnCallback)
 }
 
 interface GetUserCallback {
@@ -103,4 +142,8 @@ interface GetUserCallback {
 
 interface BooleanAuthUserCallback {
     fun callback(status: Boolean)
+}
+
+interface UrlReturnCallback {
+    fun callback(url: String)
 }

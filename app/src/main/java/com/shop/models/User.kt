@@ -2,10 +2,16 @@ package com.shop.models
 
 //Класс хранит информацию о конкретном пользователе
 data class User(
-    val name: String = "",
-    val lastname: String = "",
-    val email: String = "",
-    val photo: String = ""
+    var name: String = "",
+    var lastname: String = "",
+    var email: String = "",
+    var photo: String = "",
+    var login: String = "",
+    var street: String = "",
+    var home: String = "",
+    var entrance: String = "",
+    var flat: String = "",
+    var age: Int? = null
 ) {
     companion object {
         var currentUser: User? = null

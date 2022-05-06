@@ -4,4 +4,7 @@
     <dimen name="nav_layout_height">30dp</dimen>
     <dimen name="toolbar_auth_corners_radius">64dp</dimen>
     <dimen name="fragment_margin_top_scroll">92dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

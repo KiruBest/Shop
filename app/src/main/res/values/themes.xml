@@ -39,7 +39,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/nav_text_color</item>
         <item name="android:textSize">12sp</item>
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">92dp</item>
         <item name="android:layout_height">match_parent</item>
     </style>
 
@@ -63,4 +63,10 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">20sp</item>
     </style>
+    <style name="Theme.Shop.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.Shop.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Shop.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

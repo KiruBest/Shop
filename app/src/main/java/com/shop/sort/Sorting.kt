@@ -4,10 +4,10 @@ import com.shop.models.Product
 
 class Sorting {
     fun sortPrice(products: MutableList<Product>): List<Product> {
-        return products.sortedWith(compareBy { it.price })
+        return products.sortedWith(compareBy(Product::price))
     }
 
-    fun sorPriceDec(products: MutableList<Product>): List<Product> {
+    fun sortPriceDec(products: MutableList<Product>): List<Product> {
         return products.sortedWith(compareByDescending(Product::price))
     }
 
