@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         //Здесь теоретически будут пункты сортировки, но я думаю надо будет сделать по-другому
         initSortSpinner()
 
-        initAddProduct()
+
 
         //Это просто для красоты, добавляется overscroll
         OverScrollDecoratorHelper.setUpOverScroll(binding.scrollView)
@@ -138,7 +138,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUser() {
-        if (Firebase.auth.currentUser?.uid == ADMIN_ID) binding.buttonPlus.isVisible = true
 
         //Поиск текущего пользователя в БД
         userDatabase.readCurrentUser(Firebase.auth.currentUser?.uid.toString(),
@@ -200,12 +199,6 @@ class MainActivity : AppCompatActivity() {
         //По клику на Сортировка появляеся список
         binding.sort.setOnClickListener {
             binding.sortSpinner.performClick()
-        }
-    }
-
-    private fun initAddProduct() {
-        binding.buttonPlus.setOnClickListener {
-            startActivity(Intent(this, AddProductActivity::class.java))
         }
     }
 

@@ -11,8 +11,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.shop.R
 import com.shop.adapters.ProductAdapter
 import com.shop.databinding.FragmentShopBinding
@@ -20,6 +23,8 @@ import com.shop.firebase.GetProductCallback
 import com.shop.firebase.ProductDatabase
 import com.shop.models.BasketProduct
 import com.shop.models.Product
+import com.shop.ui.admin.ADMIN_ID
+import com.shop.ui.admin.AddProductActivity
 import com.shop.ui.productpage.ProductPageActivity
 
 class ShopFragment : Fragment() {
@@ -43,6 +48,7 @@ class ShopFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (Firebase.auth.currentUser?.uid == ADMIN_ID) binding.buttonPlus.isVisible = true
 
         progressBar.visibility = ProgressBar.VISIBLE
         productDatabase.readProduct(object : GetProductCallback {
@@ -55,6 +61,8 @@ class ShopFragment : Fragment() {
                 progressBar.visibility = ProgressBar.GONE
             }
         })
+
+        initAddProduct()
 
         initRecyclerView()
         setCategoryClick()
@@ -148,6 +156,12 @@ class ShopFragment : Fragment() {
             textView.isActivated = true
             textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             deleteProductCategory(textView)
+        }
+    }
+
+    private fun initAddProduct() {
+        binding.buttonPlus.setOnClickListener {
+            startActivity(Intent(requireContext(), AddProductActivity::class.java))
         }
     }
 

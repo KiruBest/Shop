@@ -32,6 +32,21 @@
     <string name="number_phone_pa_hint">+79999999999</string>
     <string name="email_pa">Адрес электронной почты:</string>
     <string name="email_pa_hint">ivan.ivanovich@gmail.com</string>
+    <string name="end_sum">Итого:</string>
+    <string name="sum">Сумма</string>
+    <string name="pay">Оплатить</string>
+    <string name="payment_card_number">Номер карты</string>
+    <string name="payment_month">ММ/ГГ</string>
+    <string name="payment_cvv">CVV/CVC</string>
+    <string name="payment_name_cardholder">ФИО владельца карты</string>
+    <string name="payment_end_sum">Итоговая сумма:</string>
+    <string name="payment_random_sum">10000</string>
+    <string name="payment_ruble">р.</string>
+    <string name="payment_pay">Оплатить</string>
+    <string name="payment_back">Вернуться</string>
+    <string name="payment_delivery_days">Примерный срок доставки по вашему адресу: 20 дней</string>
+    <string name="payment_another_delivery">Выбрать другой адрес доставки:</string>
+    <string name="payment_wishes_delivery">Ваши пожелания</string>
 
     <string-array name="sort_category">
         <item>По названию (↑)</item>
