@@ -10,23 +10,22 @@ import com.shop.models.Product
 
 class BasketRecyclerViewAdapter(
     private val products: MutableList<Product>,
-    private val onItemClickListener: OnItemClickListener
-): RecyclerView.Adapter<BasketRecyclerViewAdapter.BasketProductHolder>() {
+    private val onItemClick: (product: Product) -> Unit,
+    private val onDeleteClick: (productID: String) -> Unit,
+) : RecyclerView.Adapter<BasketRecyclerViewAdapter.BasketProductHolder>() {
 
-    inner class BasketProductHolder(binding: LayoutBasketProductItemBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class BasketProductHolder(binding: LayoutBasketProductItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         val title = binding.title
         val price = binding.price
         val photo = binding.photo
         val delete = binding.delete
     }
 
-    interface OnItemClickListener {
-        fun onItemClick(product: Product)
-        fun onDeleteClick(productID: String)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BasketProductHolder {
-        val binding = LayoutBasketProductItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = LayoutBasketProductItemBinding.inflate(LayoutInflater.from(parent.context),
+            parent,
+            false)
         return BasketProductHolder(binding)
     }
 
@@ -39,11 +38,11 @@ class BasketRecyclerViewAdapter(
             .into(holder.photo)
 
         holder.photo.setOnClickListener {
-            onItemClickListener.onItemClick(product = products[position])
+            onItemClick(products[position])
         }
 
         holder.delete.setOnClickListener {
-            onItemClickListener.onDeleteClick(products[position].id)
+            onDeleteClick(products[position].id)
         }
     }
 

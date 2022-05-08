@@ -7,19 +7,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.shop.R
 import com.shop.adapters.ProductAdapter
 import com.shop.databinding.FragmentShopBinding
-import com.shop.firebase.GetProductCallback
 import com.shop.firebase.ProductDatabase
 import com.shop.models.BasketProduct
 import com.shop.models.Product
@@ -31,11 +30,9 @@ class ShopFragment : Fragment() {
     private var _binding: FragmentShopBinding? = null
     private val binding get() = _binding!!
 
-    val progressBar: ProgressBar by lazy { binding.progressBar }
-
     private val productDatabase = ProductDatabase.instance()
 
-    lateinit var productAdapter: ProductAdapter
+    var productRecyclerView: RecyclerView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,25 +43,15 @@ class ShopFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (Firebase.auth.currentUser?.uid == ADMIN_ID) binding.buttonPlus.isVisible = true
 
-        progressBar.visibility = ProgressBar.VISIBLE
-        productDatabase.readProduct(object : GetProductCallback {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun callback(products: MutableList<Product>) {
-                Product.products.clear()
-                Product.products.addAll(products)
-                productAdapter.notifyDataSetChanged()
-                Log.d("productArray", Product.products.toString())
-                progressBar.visibility = ProgressBar.GONE
-            }
-        })
+        initRecyclerView()
 
         initAddProduct()
 
-        initRecyclerView()
         setCategoryClick()
     }
 
@@ -75,46 +62,43 @@ class ShopFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initRecyclerView() {
-        val productRecyclerView = binding.productRecyclerView
+        val productAdapter = ProductAdapter(Product.products,
+            onItemClick = { product ->
+                val intent = Intent(requireContext(), ProductPageActivity::class.java)
+                intent.putExtra("product", product)
+                requireActivity().startActivity(intent)
+            },
 
-        productAdapter =
-            ProductAdapter(
-                Product.products, object : ProductAdapter.OnItemClickListener {
-                    override fun onItemClick(product: Product) {
-                        val intent = Intent(requireContext(), ProductPageActivity::class.java)
-
-                        intent.putExtra("product", product)
-
-                        requireActivity().startActivity(intent)
-                    }
-
-                    override fun onBasketClick(productID: String, uid: String) {
-                        BasketProduct.products.forEach {
-                            if (it.id == productID) {
-                                Toast.makeText(requireContext(),
-                                    "Объект уже в корзине",
-                                    Toast.LENGTH_SHORT)
-                                    .show()
-                                return@onBasketClick
-                            }
-                        }
-                        productDatabase.addToBasket(productID, uid, 1)
+            onBasketClick = { productID, uid ->
+                BasketProduct.products.forEach {
+                    if (it.id == productID) {
                         Toast.makeText(requireContext(),
-                            "Объект добавлен в корзину",
+                            "Объект уже в корзине",
                             Toast.LENGTH_SHORT)
                             .show()
-                    }
 
-                    override fun onFavoriteClick(productID: String, uid: String) {
-                        BasketProduct.products.forEach {
-                            if (it.id == productID) {
-                                //Toast.makeText(requireContext(), "Объект уже в корзине", Toast.LENGTH_SHORT).show()
-                                return@onFavoriteClick
-                            }
-                        }
+                        Log.d("prod", BasketProduct.products.toString())
+
+                        return@ProductAdapter
                     }
                 }
-            )
+
+                productDatabase.addToBasket(productID, uid, 1)
+                Toast.makeText(requireContext(),
+                    "Объект добавлен в корзину",
+                    Toast.LENGTH_SHORT)
+                    .show()
+            },
+
+            onFavoriteClick = { productID, uid ->
+                BasketProduct.products.forEach {
+                    if (it.id == productID) {
+                        //Toast.makeText(requireContext(), "Объект уже в корзине", Toast.LENGTH_SHORT).show()
+                        return@ProductAdapter
+                    }
+                }
+            }
+        )
 
         //Grid layout позволяет располагать товары в 2 столбца
         val gridLayoutManager = object : GridLayoutManager(requireContext(), 2) {
@@ -124,10 +108,13 @@ class ShopFragment : Fragment() {
             }
         }
 
+        productRecyclerView = binding.productRecyclerView
+
         //Менеджер и адаптер привязывается к RecyclerView
-        productRecyclerView.layoutManager = gridLayoutManager
-        productRecyclerView.adapter = productAdapter
-        productAdapter.notifyDataSetChanged()
+        productRecyclerView?.apply {
+            layoutManager = gridLayoutManager
+            adapter = productAdapter
+        }
     }
 
     //Обработка кликов сортировки по категориям

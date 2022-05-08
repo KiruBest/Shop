@@ -23,14 +23,14 @@ class UserDatabase private constructor() : IUserDatabase {
     }
 
     //Текущий пользователь ищется в БД
-    override fun readCurrentUser(uid: String, callback: GetUserCallback) {
+    override fun readCurrentUser(uid: String, callback: (currentUser: User) -> Unit) {
         Firebase.database.getReference("users")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach {
                         if (it.key == uid) {
                             val user: User = it.getValue(User::class.java)!!
-                            callback.callback(user)
+                            callback.invoke(user)
                             Log.d(TAG, user.toString())
                             return
                         }
@@ -45,16 +45,16 @@ class UserDatabase private constructor() : IUserDatabase {
     }
 
     //Авторизация
-    override fun signIn(email: String, password: String, callback: BooleanAuthUserCallback) {
+    override fun signIn(email: String, password: String, callback: (status: Boolean) -> Unit) {
         Firebase.auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    callback.callback(true)
+                    callback.invoke(true)
                     Log.d(TAG, "signInWithEmail:success")
                 } else {
                     // If sign in fails, display a message to the user.
-                    callback.callback(false)
+                    callback.invoke(false)
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
                 }
             }
@@ -67,24 +67,32 @@ class UserDatabase private constructor() : IUserDatabase {
     }
 
     //Регистрация
-    override fun createAccount(email: String, password: String, callback: BooleanAuthUserCallback) {
+    override fun createAccount(
+        email: String,
+        password: String,
+        callback: (status: Boolean) -> Unit
+    ) {
         // [START create_user_with_email]
         Firebase.auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     writeUser(Firebase.auth.currentUser?.uid.toString(), User(email = email))
-                    callback.callback(true)
+                    callback.invoke(true)
                     Log.d(TAG, "createUserWithEmail:success")
                 } else {
                     // If sign in fails, display a message to the user.
-                    callback.callback(false)
+                    callback.invoke(false)
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
                 }
             }
     }
 
-    override fun saveProfilePhoto(uid: String, currentUserPhoto: Uri, urlReturnCallback: UrlReturnCallback) {
+    override fun saveProfilePhoto(
+        uid: String,
+        currentUserPhoto: Uri,
+        callback: (url: String) -> Unit
+    ) {
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.getReference("user_photo")
         val downloadImageUri: StorageReference = storageRef.child("${uid}_photo.webm")
@@ -108,7 +116,7 @@ class UserDatabase private constructor() : IUserDatabase {
 
                             url = it.result.toString()
 
-                            urlReturnCallback.callback(url)
+                            callback.invoke(url)
                         }
                     }
                 }
@@ -130,20 +138,8 @@ class UserDatabase private constructor() : IUserDatabase {
 interface IUserDatabase {
     fun writeUser(uid: String, user: User)
     fun signOut()
-    fun readCurrentUser(uid: String, callback: GetUserCallback)
-    fun signIn(email: String, password: String, callback: BooleanAuthUserCallback)
-    fun createAccount(email: String, password: String, callback: BooleanAuthUserCallback)
-    fun saveProfilePhoto(uid: String, currentUserPhoto: Uri, urlReturnCallback: UrlReturnCallback)
-}
-
-interface GetUserCallback {
-    fun callback(currentUser: User)
-}
-
-interface BooleanAuthUserCallback {
-    fun callback(status: Boolean)
-}
-
-interface UrlReturnCallback {
-    fun callback(url: String)
+    fun readCurrentUser(uid: String, callback: (currentUser: User) -> Unit)
+    fun signIn(email: String, password: String, callback: (status: Boolean) -> Unit)
+    fun createAccount(email: String, password: String, callback: (status: Boolean) -> Unit)
+    fun saveProfilePhoto(uid: String, currentUserPhoto: Uri, callback: (url: String) -> Unit)
 }

@@ -10,9 +10,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -21,16 +21,12 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.shop.R
 import com.shop.databinding.ActivityMainBinding
-import com.shop.firebase.GetUserCallback
 import com.shop.firebase.ProductDatabase
 import com.shop.firebase.UserDatabase
 import com.shop.models.BasketProduct
-import com.shop.models.FavoriteProduct
 import com.shop.models.Product
 import com.shop.models.User
 import com.shop.sort.Sorting
-import com.shop.ui.admin.ADMIN_ID
-import com.shop.ui.admin.AddProductActivity
 import com.shop.ui.personalaccount.PersonalAccount
 import com.shop.ui.register.AuthActivity
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
@@ -53,18 +49,32 @@ class MainActivity : AppCompatActivity() {
     private var currentNav: TextView? = null
     private lateinit var previousNav: TextView
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.progressBar.visibility = ProgressBar.VISIBLE
+        productDatabase.readProduct { products ->
+            Product.products.clear()
+            Product.products.addAll(products)
+            shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
+            Log.d("productArray", Product.products.toString())
+            binding.progressBar.visibility = ProgressBar.GONE
+        }
+
+        productDatabase.getFromBasket(Firebase.auth.currentUser?.uid.toString()) { products ->
+            BasketProduct.products.clear()
+            BasketProduct.products.addAll(products)
+            basketFragment.basketRecyclerView?.adapter?.notifyDataSetChanged()
+        }
 
         //Инициализация текущего пользователя, ниже будет подробнее
         initUser()
 
         //Инициализация actionBar и ShopFragment
         initToolbar()
-
-        initFragments()
 
         initFirstFragment()
 
@@ -73,8 +83,6 @@ class MainActivity : AppCompatActivity() {
 
         //Здесь теоретически будут пункты сортировки, но я думаю надо будет сделать по-другому
         initSortSpinner()
-
-
 
         //Это просто для красоты, добавляется overscroll
         OverScrollDecoratorHelper.setUpOverScroll(binding.scrollView)
@@ -138,15 +146,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUser() {
-
         //Поиск текущего пользователя в БД
-        userDatabase.readCurrentUser(Firebase.auth.currentUser?.uid.toString(),
-            object : GetUserCallback {
-                override fun callback(currentUser: User) {
-                    User.currentUser = currentUser
-                    invalidateOptionsMenu()
-                }
-            })
+        userDatabase.readCurrentUser(Firebase.auth.currentUser?.uid.toString()) { currentUser ->
+            User.currentUser = currentUser
+            invalidateOptionsMenu()
+        }
     }
 
     private fun initToolbar() {
@@ -156,27 +160,19 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.mainToolbar)
     }
 
-    private fun initFragments() {
+    private fun initFirstFragment() {
+        //При открытии приложения каталог устанавливается выбранным
+        //Т.е. заполняется черным
         basketFragment = BasketFragment()
 
         favoriteFragment = FavoriteFragment()
 
         shopFragment = ShopFragment()
-    }
 
-    private fun initFirstFragment() {
-        //При открытии приложения каталог устанавливается выбранным
-        //Т.е. заполняется черным
         binding.navShop.isActivated = true
         currentNav = binding.navShop
 
-        supportFragmentManager.beginTransaction().add(R.id.fragmentContainerView, basketFragment)
-            .commit()
-
-        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, favoriteFragment)
-            .commit()
-
-        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, shopFragment)
+        supportFragmentManager.beginTransaction().add(R.id.fragmentContainerView, shopFragment)
             .commit()
     }
 
@@ -224,10 +220,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         //Также как в AuthFragment производится смена fragment
-        supportFragmentManager.beginTransaction()
-            .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_right)
-            .replace(R.id.fragmentContainerView, fragment!!)
-            .commit()
+        fragment?.let { it ->
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_right)
+                .replace(R.id.fragmentContainerView, it)
+                .commit()
+        }
     }
 
     private fun deleteCurrentNavMenu() {
@@ -246,6 +244,7 @@ class MainActivity : AppCompatActivity() {
             this,
             R.array.sort_category, R.layout.support_simple_spinner_dropdown_item
         )
+
         //Установка адаптера
         binding.sortSpinner.adapter = adapter
         binding.sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -259,80 +258,86 @@ class MainActivity : AppCompatActivity() {
                 val sortName = resources.getStringArray(R.array.sort_category)
                 //Получаем текст из нажатого textview
                 val text: String = binding.sortSpinner.selectedItem.toString()
-                val s = Sorting()
-
-                var temps: MutableList<Product>
+                val sorting = Sorting()
+                val temp = mutableListOf<Product>()
 
                 //Сравниваем значения полученное при нажатии с каждым элементом спинера
                 when (text) {
                     sortName[0] -> {
-                        temps = s.sortName(Product.products).toMutableList()
-                        Product.products.clear()
-                        Product.products.addAll(temps)
-                        shopFragment.productAdapter.notifyDataSetChanged()
+                        shopFragment.productRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(Product.products)
+                            Product.products.clear()
+                            Product.products.addAll(sorting.sortName(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
 
-                        temps = s.sortName(BasketProduct.products).toMutableList()
-                        BasketProduct.products.clear()
-                        BasketProduct.products.addAll(temps)
-                        basketFragment.adapter.notifyDataSetChanged()
-
-                        temps = s.sortName(FavoriteProduct.products).toMutableList()
-                        FavoriteProduct.products.clear()
-                        FavoriteProduct.products.addAll(temps)
+                        basketFragment.basketRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(BasketProduct.products)
+                            BasketProduct.products.clear()
+                            BasketProduct.products.addAll(sorting.sortName(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
                     }
                     sortName[1] -> {
-                        temps = s.sortNameDec(Product.products).toMutableList()
-                        Product.products.clear()
-                        Product.products.addAll(temps)
-                        shopFragment.productAdapter.notifyDataSetChanged()
+                        shopFragment.productRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(Product.products)
+                            Product.products.clear()
+                            Product.products.addAll(sorting.sortNameDec(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
 
-                        temps = s.sortNameDec(BasketProduct.products).toMutableList()
-                        BasketProduct.products.clear()
-                        BasketProduct.products.addAll(temps)
-                        basketFragment.adapter.notifyDataSetChanged()
-
-                        temps = s.sortNameDec(FavoriteProduct.products).toMutableList()
-                        FavoriteProduct.products.clear()
-                        FavoriteProduct.products.addAll(temps)
+                        basketFragment.basketRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(BasketProduct.products)
+                            BasketProduct.products.clear()
+                            BasketProduct.products.addAll(sorting.sortNameDec(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
                     }
                     sortName[2] -> {
-                        temps = s.sortPrice(Product.products).toMutableList()
-                        Product.products.clear()
-                        Product.products.addAll(temps)
-                        shopFragment.productAdapter.notifyDataSetChanged()
+                        shopFragment.productRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(Product.products)
+                            Product.products.clear()
+                            Product.products.addAll(sorting.sortPrice(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
 
-                        temps = s.sortPrice(BasketProduct.products).toMutableList()
-                        BasketProduct.products.clear()
-                        BasketProduct.products.addAll(temps)
-                        basketFragment.adapter.notifyDataSetChanged()
-
-                        temps = s.sortPrice(FavoriteProduct.products).toMutableList()
-                        FavoriteProduct.products.clear()
-                        FavoriteProduct.products.addAll(temps)
+                        basketFragment.basketRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(BasketProduct.products)
+                            BasketProduct.products.clear()
+                            BasketProduct.products.addAll(sorting.sortPrice(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
                     }
                     sortName[3] -> {
-                        temps = s.sortPriceDec(Product.products).toMutableList()
-                        Product.products.clear()
-                        Product.products.addAll(temps)
-                        shopFragment.productAdapter.notifyDataSetChanged()
+                        shopFragment.productRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(Product.products)
+                            Product.products.clear()
+                            Product.products.addAll(sorting.sortPriceDec(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
 
-                        temps = s.sortPriceDec(BasketProduct.products).toMutableList()
-                        BasketProduct.products.clear()
-                        BasketProduct.products.addAll(temps)
-                        basketFragment.adapter.notifyDataSetChanged()
-
-                        temps = s.sortPriceDec(FavoriteProduct.products).toMutableList()
-                        FavoriteProduct.products.clear()
-                        FavoriteProduct.products.addAll(temps)
+                        basketFragment.basketRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(BasketProduct.products)
+                            BasketProduct.products.clear()
+                            BasketProduct.products.addAll(sorting.sortPriceDec(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
                     }
                 }
-
-                Log.d("categoryProducts", Product.products.toString())
-                Log.d("categoryProducts", BasketProduct.products.toString())
             }
 
             //Используется, когда ни на что не кликнули
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                return
+            }
         }
     }
 

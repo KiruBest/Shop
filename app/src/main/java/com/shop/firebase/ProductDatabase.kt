@@ -21,12 +21,10 @@ class ProductDatabase private constructor() : IProductDatabase {
     private var cashProducts: MutableList<Product> = mutableListOf<Product>()
 
     //Добавление всех товаров из БД
-    override fun readProduct(
-        callback: GetProductCallback,
-    ) {
+    override fun readProduct(callback: (products: MutableList<Product>) -> Unit) {
         if (cashProducts.isNotEmpty()) {
             Log.d("cashProducts", cashProducts.toString())
-            callback.callback(cashProducts)
+            callback.invoke(cashProducts)
             return
         }
 
@@ -43,7 +41,7 @@ class ProductDatabase private constructor() : IProductDatabase {
                         cashProducts.add(product!!)
                     }
 
-                    callback.callback(cashProducts)
+                    callback.invoke(cashProducts)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -53,7 +51,11 @@ class ProductDatabase private constructor() : IProductDatabase {
     }
 
     @SuppressLint("SimpleDateFormat")
-    override fun writeProduct(product: Product, imageUri: Uri, callback: BooleanProductCallback) {
+    override fun writeProduct(
+        product: Product,
+        imageUri: Uri,
+        callback: (status: Boolean) -> Unit
+    ) {
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.getReference("product_photo")
 
@@ -81,7 +83,7 @@ class ProductDatabase private constructor() : IProductDatabase {
                             Firebase.database.reference.child("products")
                                 .child("${product.title}$key").setValue(product)
 
-                            callback.callback(true)
+                            callback.invoke(true)
                         }
                     }
                 }
@@ -95,7 +97,7 @@ class ProductDatabase private constructor() : IProductDatabase {
             .setValue(count)
     }
 
-    override fun getFromBasket(uid: String, callback: GetProductCallback) {
+    override fun getFromBasket(uid: String, callback: (products: MutableList<Product>) -> Unit) {
         val basketProducts = mutableListOf<Product>()
 
         Firebase.database.getReference("basket")
@@ -107,13 +109,13 @@ class ProductDatabase private constructor() : IProductDatabase {
                     snapshot.children.forEach { basketProduct ->
                         cashProducts.forEach { product ->
                             if (basketProduct.key == "${uid}_${product.id}") {
-                                product.count = basketProduct.value.toString().toInt()
                                 basketProducts.add(product)
+                                basketProducts.last().count = basketProduct.value.toString().toInt()
                             }
                         }
                     }
 
-                    callback.callback(basketProducts)
+                    callback.invoke(basketProducts)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -125,7 +127,7 @@ class ProductDatabase private constructor() : IProductDatabase {
     override fun dropProductFromBasket(
         uid: String,
         productID: String,
-        callback: BooleanProductCallback,
+        callback: (status: Boolean) -> Unit
     ) {
         Firebase.database.getReference("basket")
             .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -135,12 +137,12 @@ class ProductDatabase private constructor() : IProductDatabase {
                         if (basketProduct.key == "${uid}_${productID}") basketProduct.ref.removeValue()
                     }
 
-                    callback.callback(true)
+                    callback.invoke(true)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
-                    callback.callback(false)
+                    callback.invoke(false)
                 }
             })
     }
@@ -155,17 +157,9 @@ class ProductDatabase private constructor() : IProductDatabase {
 }
 
 interface IProductDatabase {
-    fun readProduct(callback: GetProductCallback)
-    fun writeProduct(product: Product, imageUri: Uri, callback: BooleanProductCallback)
+    fun readProduct(callback: (products: MutableList<Product>) -> Unit)
+    fun writeProduct(product: Product, imageUri: Uri, callback: (status: Boolean) -> Unit)
     fun addToBasket(productID: String, uid: String, count: Int)
-    fun getFromBasket(uid: String, callback: GetProductCallback)
-    fun dropProductFromBasket(uid: String, productID: String, callback: BooleanProductCallback)
-}
-
-interface GetProductCallback {
-    fun callback(products: MutableList<Product>)
-}
-
-interface BooleanProductCallback {
-    fun callback(status: Boolean)
+    fun getFromBasket(uid: String, callback: (products: MutableList<Product>) -> Unit)
+    fun dropProductFromBasket(uid: String, productID: String, callback: (status: Boolean) -> Unit)
 }

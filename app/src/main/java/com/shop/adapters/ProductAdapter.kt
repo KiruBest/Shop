@@ -15,7 +15,9 @@ import com.shop.models.Product
 //Таким образом реализуются все Адаптеры
 class ProductAdapter(
     private val products: MutableList<Product>,
-    private val onItemClickListener: OnItemClickListener
+    private val onItemClick: (product: Product) -> Unit,
+    private val onBasketClick: (productID: String, uid: String) -> Unit,
+    private val onFavoriteClick: (productID: String, uid: String) -> Unit
 ) :
     RecyclerView.Adapter<ProductAdapter.ProductHolder>() {
 
@@ -43,40 +45,30 @@ class ProductAdapter(
             .load(products[position].photo)
             .into(holder.photo)
 
-        holder.itemView.setOnClickListener {
-            onItemClickListener.onItemClick(products[position])
+        holder.photo.setOnClickListener {
+            onItemClick(products[position])
         }
 
-        if (BasketProduct.products.contains(products[position]))
-            holder.basketButton.isActivated = true
+        BasketProduct.products.forEach { basketProduct ->
+            if(basketProduct.id == products[position].id) holder.basketButton.isActivated = true
+        }
 
-        if (FavoriteProduct.products.contains(products[position]))
-            holder.favoriteButton.isActivated = true
+        FavoriteProduct.products.forEach { favoriteProduct ->
+            if(favoriteProduct.id == products[position].id) holder.favoriteButton.isActivated = true
+        }
 
         holder.basketButton.setOnClickListener {
-            if (it.isActivated) return@setOnClickListener
-            else {
-                it.isActivated = true
-                onItemClickListener.onBasketClick(products[position].id,
-                    Firebase.auth.currentUser?.uid.toString())
-            }
+            it.isActivated = true
+            onBasketClick(products[position].id,
+                Firebase.auth.currentUser?.uid.toString())
         }
 
         holder.favoriteButton.setOnClickListener {
-            if (it.isActivated) return@setOnClickListener
-            else {
-                it.isActivated = true
-                onItemClickListener.onFavoriteClick(products[position].id,
-                    Firebase.auth.currentUser?.uid.toString())
-            }
+            it.isActivated = true
+            onFavoriteClick(products[position].id,
+                Firebase.auth.currentUser?.uid.toString())
         }
     }
 
     override fun getItemCount(): Int = Product.products.size
-
-    interface OnItemClickListener {
-        fun onItemClick(product: Product)
-        fun onBasketClick(productID: String, uid: String)
-        fun onFavoriteClick(productID: String, uid: String)
-    }
 }

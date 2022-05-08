@@ -16,7 +16,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.shop.R
 import com.shop.databinding.FragmentPersonalAccountBinding
-import com.shop.firebase.UrlReturnCallback
 import com.shop.firebase.UserDatabase
 import com.shop.models.User
 import com.shop.ui.main.MainActivity
@@ -142,20 +141,20 @@ class PersonalAccount : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK && data != null) {
-            val currentUserPhoto = data.data!!
-
-            userDatabase.saveProfilePhoto(Firebase.auth.uid.toString(), currentUserPhoto, object :
-                UrlReturnCallback {
-                override fun callback(url: String) {
+            data.data?.let { userPhoto ->
+                userDatabase.saveProfilePhoto(Firebase.auth.uid.toString(), userPhoto) { url ->
                     User.currentUser?.let {
                         it.photo = url
                         Glide.with(requireContext()).load(it.photo).into(binding.accountImage)
                         requireActivity().invalidateOptionsMenu()
                     }
                 }
-            })
+            }
 
-            Toast.makeText(requireContext(), "Не забудьте сохранить изменения", Toast.LENGTH_SHORT).show()
+
+
+            Toast.makeText(requireContext(), "Не забудьте сохранить изменения", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
