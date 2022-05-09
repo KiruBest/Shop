@@ -3,7 +3,6 @@ package com.shop.ui.main
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,7 @@ import com.shop.adapters.ProductAdapter
 import com.shop.databinding.FragmentShopBinding
 import com.shop.firebase.ProductDatabase
 import com.shop.models.BasketProduct
+import com.shop.models.FavoriteProduct
 import com.shop.models.Product
 import com.shop.ui.admin.ADMIN_ID
 import com.shop.ui.admin.AddProductActivity
@@ -72,31 +72,42 @@ class ShopFragment : Fragment() {
             onBasketClick = { productID, uid ->
                 BasketProduct.products.forEach {
                     if (it.id == productID) {
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             "Объект уже в корзине",
-                            Toast.LENGTH_SHORT)
-                            .show()
-
-                        Log.d("prod", BasketProduct.products.toString())
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                         return@ProductAdapter
                     }
                 }
 
                 productDatabase.addToBasket(productID, uid, 1)
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "Объект добавлен в корзину",
-                    Toast.LENGTH_SHORT)
-                    .show()
+                    Toast.LENGTH_SHORT
+                ).show()
             },
 
             onFavoriteClick = { productID, uid ->
-                BasketProduct.products.forEach {
+                FavoriteProduct.products.forEach {
                     if (it.id == productID) {
-                        //Toast.makeText(requireContext(), "Объект уже в корзине", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Объект уже в избранном",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         return@ProductAdapter
                     }
                 }
+
+                productDatabase.addToFavorite(productID, uid)
+                Toast.makeText(
+                    requireContext(),
+                    "Объект добавлен в избранное",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         )
 

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -24,6 +23,7 @@ import com.shop.databinding.ActivityMainBinding
 import com.shop.firebase.ProductDatabase
 import com.shop.firebase.UserDatabase
 import com.shop.models.BasketProduct
+import com.shop.models.FavoriteProduct
 import com.shop.models.Product
 import com.shop.models.User
 import com.shop.sort.Sorting
@@ -65,6 +65,9 @@ class MainActivity : AppCompatActivity() {
 
         //Создается навигация по верхним кнопкам
         initTopNav()
+
+        //Добавление из базы данных
+        initDataFromDatabase()
 
         //Здесь теоретически будут пункты сортировки, но я думаю надо будет сделать по-другому
         initSortSpinner()
@@ -267,6 +270,14 @@ class MainActivity : AppCompatActivity() {
                             BasketProduct.products.addAll(sorting.sortName(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
                         }
+
+                        favoriteFragment.favoriteRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(FavoriteProduct.products)
+                            FavoriteProduct.products.clear()
+                            FavoriteProduct.products.addAll(sorting.sortName(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
                     }
                     sortName[1] -> {
                         shopFragment.productRecyclerView?.adapter?.let {
@@ -282,6 +293,14 @@ class MainActivity : AppCompatActivity() {
                             temp.addAll(BasketProduct.products)
                             BasketProduct.products.clear()
                             BasketProduct.products.addAll(sorting.sortNameDec(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
+
+                        favoriteFragment.favoriteRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(FavoriteProduct.products)
+                            FavoriteProduct.products.clear()
+                            FavoriteProduct.products.addAll(sorting.sortNameDec(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
                         }
                     }
@@ -301,6 +320,14 @@ class MainActivity : AppCompatActivity() {
                             BasketProduct.products.addAll(sorting.sortPrice(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
                         }
+
+                        favoriteFragment.favoriteRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(FavoriteProduct.products)
+                            FavoriteProduct.products.clear()
+                            FavoriteProduct.products.addAll(sorting.sortPrice(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
                     }
                     sortName[3] -> {
                         shopFragment.productRecyclerView?.adapter?.let {
@@ -316,6 +343,14 @@ class MainActivity : AppCompatActivity() {
                             temp.addAll(BasketProduct.products)
                             BasketProduct.products.clear()
                             BasketProduct.products.addAll(sorting.sortPriceDec(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
+
+                        favoriteFragment.favoriteRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll(FavoriteProduct.products)
+                            FavoriteProduct.products.clear()
+                            FavoriteProduct.products.addAll(sorting.sortPriceDec(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
                         }
                     }
@@ -336,18 +371,24 @@ class MainActivity : AppCompatActivity() {
             Product.products.clear()
             Product.products.addAll(products)
             shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
-            Log.d("productArray", Product.products.toString())
+
+            Firebase.auth.currentUser?.uid?.let {
+                productDatabase.getFromFavorite(it) { products ->
+                    FavoriteProduct.products.clear()
+                    FavoriteProduct.products.addAll(products)
+                    favoriteFragment.favoriteRecyclerView?.adapter?.notifyDataSetChanged()
+                    shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
+                }
+
+                productDatabase.getFromBasket(it) { products ->
+                    BasketProduct.products.clear()
+                    BasketProduct.products.addAll(products)
+                    basketFragment.basketRecyclerView?.adapter?.notifyDataSetChanged()
+                    shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
+                }
+            }
+
             binding.progressBar.visibility = ProgressBar.GONE
         }
-
-        productDatabase.getFromBasket(Firebase.auth.currentUser?.uid.toString()) { products ->
-            BasketProduct.products.clear()
-            BasketProduct.products.addAll(products)
-            basketFragment.basketRecyclerView?.adapter?.notifyDataSetChanged()
-        }
     }
-
-
-
-
 }

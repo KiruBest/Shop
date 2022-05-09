@@ -50,23 +50,26 @@ class ProductAdapter(
         }
 
         BasketProduct.products.forEach { basketProduct ->
-            if(basketProduct.id == products[position].id) holder.basketButton.isActivated = true
+            if (basketProduct.id == products[position].id) holder.basketButton.isActivated = true
         }
 
         FavoriteProduct.products.forEach { favoriteProduct ->
-            if(favoriteProduct.id == products[position].id) holder.favoriteButton.isActivated = true
+            if (favoriteProduct.id == products[position].id) holder.favoriteButton.isActivated =
+                true
         }
 
         holder.basketButton.setOnClickListener {
             it.isActivated = true
-            onBasketClick(products[position].id,
-                Firebase.auth.currentUser?.uid.toString())
+            Firebase.auth.currentUser?.uid?.let { uid ->
+                onBasketClick(products[position].id, uid)
+            }
         }
 
         holder.favoriteButton.setOnClickListener {
             it.isActivated = true
-            onFavoriteClick(products[position].id,
-                Firebase.auth.currentUser?.uid.toString())
+            Firebase.auth.currentUser?.uid?.let { uid ->
+                onFavoriteClick(products[position].id, uid)
+            }
         }
     }
 

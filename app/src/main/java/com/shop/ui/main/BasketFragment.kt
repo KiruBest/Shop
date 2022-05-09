@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +40,8 @@ class BasketFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        emptyListCheck()
+
         val basketRecyclerViewAdapter = BasketRecyclerViewAdapter(BasketProduct.products,
             onItemClick = { product ->
                 val intent = Intent(requireContext(), ProductPageActivity::class.java)
@@ -46,11 +50,13 @@ class BasketFragment : Fragment() {
             },
 
             onDeleteClick = { productID ->
-                productDatabase.dropProductFromBasket(Firebase.auth.currentUser?.uid.toString(),
-                    productID) { status ->
+                productDatabase.dropProductFromBasket(
+                    Firebase.auth.currentUser?.uid.toString(),
+                    productID
+                ) { status ->
                     if (status) {
                         for (i in 0 until BasketProduct.products.size) {
-                            if(BasketProduct.products[i].id == productID) {
+                            if (BasketProduct.products[i].id == productID) {
                                 basketRecyclerView?.adapter?.notifyItemRemoved(i)
                                 basketRecyclerView?.adapter?.notifyDataSetChanged()
                                 BasketProduct.products.removeAt(i)
@@ -60,9 +66,13 @@ class BasketFragment : Fragment() {
 
                         sum()
 
-                        Toast.makeText(requireContext(),
+                        emptyListCheck()
+
+                        Toast.makeText(
+                            requireContext(),
                             "Объект удален из корзины",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -96,6 +106,13 @@ class BasketFragment : Fragment() {
             }
 
             text = "$sum₽"
+        }
+    }
+
+    private fun emptyListCheck() {
+        if(BasketProduct.products.isEmpty()) {
+            binding.textViewEmptyWarning.visibility = TextView.VISIBLE
+            binding.constraintLayoutBottom.visibility = ConstraintLayout.GONE
         }
     }
 }

@@ -3,15 +3,12 @@ package com.shop.ui.personalaccount
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -130,8 +127,7 @@ class PersonalAccount : Fragment() {
             it.home = binding.deliveryHouseText.text.toString()
             it.entrance = binding.deliveryEntranceText.text.toString()
             it.flat = binding.deliveryFlatText.text.toString()
-            if (binding.ageText.text.toString() != "") it.age =
-                binding.ageText.text.toString().toInt()
+            it.age = binding.ageText.text.toString().toIntOrNull()
         }
 
 
@@ -154,8 +150,6 @@ class PersonalAccount : Fragment() {
                     }
                 }
             }
-
-
 
             Toast.makeText(requireContext(), "Не забудьте сохранить изменения", Toast.LENGTH_SHORT)
                 .show()
