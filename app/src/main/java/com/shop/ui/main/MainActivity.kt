@@ -55,21 +55,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.progressBar.visibility = ProgressBar.VISIBLE
-        productDatabase.readProduct { products ->
-            Product.products.clear()
-            Product.products.addAll(products)
-            shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
-            Log.d("productArray", Product.products.toString())
-            binding.progressBar.visibility = ProgressBar.GONE
-        }
-
-        productDatabase.getFromBasket(Firebase.auth.currentUser?.uid.toString()) { products ->
-            BasketProduct.products.clear()
-            BasketProduct.products.addAll(products)
-            basketFragment.basketRecyclerView?.adapter?.notifyDataSetChanged()
-        }
-
         //Инициализация текущего пользователя, ниже будет подробнее
         initUser()
 
@@ -146,12 +131,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUser() {
-        //Поиск текущего пользователя в БД
-        userDatabase.readCurrentUser(Firebase.auth.currentUser?.uid.toString()) { currentUser ->
-            User.currentUser = currentUser
-            invalidateOptionsMenu()
+    //Поиск текущего пользователя в БД
+        Firebase.auth.currentUser?.uid?.let { uid ->
+            userDatabase.readCurrentUser(uid) { currentUser ->
+                User.currentUser = currentUser
+                invalidateOptionsMenu()
+            }
         }
     }
+
 
     private fun initToolbar() {
         //Устанавливается текст и его стиль в actionBar
@@ -340,6 +328,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initDataFromDatabase() {
+        binding.progressBar.visibility = ProgressBar.VISIBLE
+        productDatabase.readProduct { products ->
+            Product.products.clear()
+            Product.products.addAll(products)
+            shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
+            Log.d("productArray", Product.products.toString())
+            binding.progressBar.visibility = ProgressBar.GONE
+        }
+
+        productDatabase.getFromBasket(Firebase.auth.currentUser?.uid.toString()) { products ->
+            BasketProduct.products.clear()
+            BasketProduct.products.addAll(products)
+            basketFragment.basketRecyclerView?.adapter?.notifyDataSetChanged()
+        }
+    }
+
+
 
 
 }
