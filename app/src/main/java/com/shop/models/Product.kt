@@ -7,7 +7,7 @@ import android.os.Parcelable
 data class Product(
     var id: String = "",
     val brand: Int = -1,
-    val category: Int = -1,
+    val category: String = "",
     val description: String = "",
     var photo: String = "",
     val price: Float = -1f,
@@ -18,7 +18,7 @@ data class Product(
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readInt(),
-        parcel.readInt(),
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readFloat(),
@@ -33,7 +33,7 @@ data class Product(
     override fun writeToParcel(p0: Parcel?, p1: Int) {
         p0?.writeString(id)
         p0?.writeInt(brand)
-        p0?.writeInt(category)
+        p0?.writeString(category)
         p0?.writeString(description)
         p0?.writeString(photo)
         p0?.writeFloat(price)

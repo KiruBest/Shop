@@ -9,7 +9,7 @@ import com.shop.databinding.LayoutBasketProductItemBinding
 import com.shop.models.Product
 
 class BasketRecyclerViewAdapter(
-    private val products: MutableList<Product>,
+    val products: MutableList<Product>,
     private val onItemClick: (product: Product) -> Unit,
     private val onDeleteClick: (productID: String) -> Unit,
 ) : RecyclerView.Adapter<BasketRecyclerViewAdapter.BasketProductHolder>() {

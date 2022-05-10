@@ -12,7 +12,7 @@ import com.shop.models.BasketProduct
 import com.shop.models.Product
 
 class FavoriteRecyclerViewAdapter(
-    private val products: MutableList<Product>,
+    val products: MutableList<Product>,
     private val onItemClick: (product: Product) -> Unit,
     private val onCloseClick: (productID: String) -> Unit,
     private val onBasketClick: (productID: String, uid: String) -> Unit
@@ -55,7 +55,7 @@ class FavoriteRecyclerViewAdapter(
         }
 
         holder.basket.setOnClickListener {
-            it.isActivated = true
+            it.isActivated = !it.isActivated
             Firebase.auth.currentUser?.uid?.let { uid ->
                 onBasketClick(products[position].id, uid)
             }

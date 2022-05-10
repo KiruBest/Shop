@@ -84,11 +84,13 @@ class FavoriteFragment : Fragment() {
                 onBasketClick = { productID, uid ->
                     BasketProduct.products.forEach {
                         if (it.id == productID) {
-                            Toast.makeText(
-                                requireContext(),
-                                "Объект уже в корзине",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            productDatabase.dropProductFromBasket(uid, productID) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Объект удален из корзины",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
 
                             return@FavoriteRecyclerViewAdapter
                         }

@@ -34,6 +34,10 @@ class ShopFragment : Fragment() {
 
     var productRecyclerView: RecyclerView? = null
 
+    var shopProducts = mutableListOf<Product>()
+
+    private var currentCategory: TextView? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -43,7 +47,6 @@ class ShopFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (Firebase.auth.currentUser?.uid == ADMIN_ID) binding.buttonPlus.isVisible = true
@@ -53,6 +56,8 @@ class ShopFragment : Fragment() {
         initAddProduct()
 
         setCategoryClick()
+
+        setLastCategory()
     }
 
     override fun onDestroyView() {
@@ -72,11 +77,13 @@ class ShopFragment : Fragment() {
             onBasketClick = { productID, uid ->
                 BasketProduct.products.forEach {
                     if (it.id == productID) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Объект уже в корзине",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        productDatabase.dropProductFromBasket(uid, productID) {
+                            Toast.makeText(
+                                requireContext(),
+                                "Объект удален из корзины",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
 
                         return@ProductAdapter
                     }
@@ -93,11 +100,13 @@ class ShopFragment : Fragment() {
             onFavoriteClick = { productID, uid ->
                 FavoriteProduct.products.forEach {
                     if (it.id == productID) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Объект уже в избранном",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        productDatabase.dropProductFromFavorite(uid, productID) {
+                            Toast.makeText(
+                                requireContext(),
+                                "Объект удален из корзины",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                         return@ProductAdapter
                     }
                 }
@@ -128,6 +137,20 @@ class ShopFragment : Fragment() {
         }
     }
 
+    private fun initAddProduct() {
+        binding.buttonPlus.setOnClickListener {
+            startActivity(Intent(requireContext(), AddProductActivity::class.java))
+        }
+    }
+
+    private fun setLastCategory() {
+        when (currentCategory?.text.toString()) {
+            requireActivity().getString(R.string.categoryChild) -> categoryActivated(binding.child)
+            requireActivity().getString(R.string.categoryMan) -> categoryActivated(binding.man)
+            requireActivity().getString(R.string.categoryWoman) -> categoryActivated(binding.woman)
+        }
+    }
+
     //Обработка кликов сортировки по категориям
     //Сама логика будет в addProductCategory и deleteProductCategory
     private fun setCategoryClick() {
@@ -144,34 +167,98 @@ class ShopFragment : Fragment() {
         }
     }
 
-    //Тут выбранные пункты красятся в черный, а не выбранные в белый
-    private fun categoryClick(textView: TextView) {
-        if (textView.isActivated) {
-            textView.isActivated = false
-            textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-            addProductCategory(textView)
-        } else {
-            textView.isActivated = true
-            textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-            deleteProductCategory(textView)
-        }
+    private fun categoryActivated(textView: TextView) {
+        currentCategory = textView
+        currentCategory?.isActivated = true
+        currentCategory?.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        addProductCategory(currentCategory!!)
     }
 
-    private fun initAddProduct() {
-        binding.buttonPlus.setOnClickListener {
-            startActivity(Intent(requireContext(), AddProductActivity::class.java))
+    private fun categoryUnActivated() {
+        currentCategory?.isActivated = false
+        currentCategory?.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        deleteProductCategory(currentCategory!!)
+    }
+
+    //Тут выбранные пункты красятся в черный, а не выбранные в белый
+    private fun categoryClick(textView: TextView) {
+        when {
+            currentCategory == null -> {
+                categoryActivated(textView)
+            }
+
+            textView != currentCategory -> {
+                categoryUnActivated()
+                categoryActivated(textView)
+            }
+
+            textView == currentCategory -> {
+                categoryUnActivated()
+                currentCategory = null
+            }
         }
     }
 
     private fun addProductCategory(textView: TextView) {
-        when (textView.text) {
+        productRecyclerView?.adapter?.let {
 
+            when (val category: String = textView.text.toString()) {
+                requireActivity().getString(R.string.categoryChild) -> getProductFromCategory(
+                    category,
+                    (it as ProductAdapter)
+                )
+
+                requireActivity().getString(R.string.categoryMan) -> getProductFromCategory(
+                    category,
+                    (it as ProductAdapter)
+                )
+
+                requireActivity().getString(R.string.categoryWoman) -> getProductFromCategory(
+                    category,
+                    (it as ProductAdapter)
+                )
+            }
         }
     }
 
     private fun deleteProductCategory(textView: TextView) {
-        when (textView.text) {
-            //TODO (Логика удаления товара категории) "" ->
+        productRecyclerView?.adapter?.let {
+
+            when (textView.text.toString()) {
+                requireActivity().getString(R.string.categoryChild) -> dropProductFromCategory(
+                    (it as ProductAdapter)
+                )
+
+                requireActivity().getString(R.string.categoryMan) -> dropProductFromCategory(
+                    (it as ProductAdapter)
+                )
+
+                requireActivity().getString(R.string.categoryWoman) -> dropProductFromCategory(
+                    (it as ProductAdapter)
+                )
+            }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getProductFromCategory(category: String, adapter: ProductAdapter) {
+        val categoryProducts = mutableListOf<Product>()
+
+        shopProducts.forEach { product ->
+            if (product.category == category) {
+                categoryProducts.add(product)
+            }
+        }
+
+        adapter.products.clear()
+        adapter.products.addAll(categoryProducts)
+        adapter.notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun dropProductFromCategory(adapter: ProductAdapter) {
+        adapter.products.clear()
+        adapter.products.addAll(shopProducts)
+        adapter.notifyDataSetChanged()
     }
 }
