@@ -145,4 +145,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="categoryChild">Детская</string>
+    <string name="categoryMan">Мужская</string>
+    <string name="categoryWoman">Женская</string>
 </resources>

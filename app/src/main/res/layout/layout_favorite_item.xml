@@ -52,7 +52,7 @@
         app:srcCompat="@drawable/ic_baseline_close_24" />
 
     <ImageView
-        android:id="@+id/favorite_image"
+        android:id="@+id/favorite_basket"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="5dp"
@@ -62,6 +62,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/favorite_close"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_shopping_basket_20" />
+        app:srcCompat="@drawable/selector_basket_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

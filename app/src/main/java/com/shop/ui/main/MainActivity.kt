@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,10 +19,14 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.shop.R
+import com.shop.adapters.BasketRecyclerViewAdapter
+import com.shop.adapters.FavoriteRecyclerViewAdapter
+import com.shop.adapters.ProductAdapter
 import com.shop.databinding.ActivityMainBinding
 import com.shop.firebase.ProductDatabase
 import com.shop.firebase.UserDatabase
 import com.shop.models.BasketProduct
+import com.shop.models.FavoriteProduct
 import com.shop.models.Product
 import com.shop.models.User
 import com.shop.sort.Sorting
@@ -65,6 +68,9 @@ class MainActivity : AppCompatActivity() {
 
         //Создается навигация по верхним кнопкам
         initTopNav()
+
+        //Добавление из базы данных
+        initDataFromDatabase()
 
         //Здесь теоретически будут пункты сортировки, но я думаю надо будет сделать по-другому
         initSortSpinner()
@@ -131,7 +137,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUser() {
-    //Поиск текущего пользователя в БД
+        //Поиск текущего пользователя в БД
         Firebase.auth.currentUser?.uid?.let { uid ->
             userDatabase.readCurrentUser(uid) { currentUser ->
                 User.currentUser = currentUser
@@ -254,68 +260,108 @@ class MainActivity : AppCompatActivity() {
                     sortName[0] -> {
                         shopFragment.productRecyclerView?.adapter?.let {
                             temp.clear()
-                            temp.addAll(Product.products)
-                            Product.products.clear()
-                            Product.products.addAll(sorting.sortName(temp))
+                            temp.addAll((it as ProductAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortNameDec(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
+
+                            shopFragment.shopProducts = sorting.sortNameDec(shopFragment.shopProducts).toMutableList()
                         }
 
                         basketFragment.basketRecyclerView?.adapter?.let {
                             temp.clear()
-                            temp.addAll(BasketProduct.products)
-                            BasketProduct.products.clear()
-                            BasketProduct.products.addAll(sorting.sortName(temp))
+                            temp.addAll((it as BasketRecyclerViewAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortNameDec(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
+
+                        favoriteFragment.favoriteRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll((it as FavoriteRecyclerViewAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortNameDec(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
                         }
                     }
                     sortName[1] -> {
                         shopFragment.productRecyclerView?.adapter?.let {
                             temp.clear()
-                            temp.addAll(Product.products)
-                            Product.products.clear()
-                            Product.products.addAll(sorting.sortNameDec(temp))
+                            temp.addAll((it as ProductAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortName(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
+
+                            shopFragment.shopProducts = sorting.sortName(shopFragment.shopProducts).toMutableList()
                         }
 
                         basketFragment.basketRecyclerView?.adapter?.let {
                             temp.clear()
-                            temp.addAll(BasketProduct.products)
-                            BasketProduct.products.clear()
-                            BasketProduct.products.addAll(sorting.sortNameDec(temp))
+                            temp.addAll((it as BasketRecyclerViewAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortName(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
+
+                        favoriteFragment.favoriteRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll((it as FavoriteRecyclerViewAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortName(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
                         }
                     }
                     sortName[2] -> {
                         shopFragment.productRecyclerView?.adapter?.let {
                             temp.clear()
-                            temp.addAll(Product.products)
-                            Product.products.clear()
-                            Product.products.addAll(sorting.sortPrice(temp))
+                            temp.addAll((it as ProductAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortPrice(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
+
+                            shopFragment.shopProducts = sorting.sortPrice(shopFragment.shopProducts).toMutableList()
                         }
 
                         basketFragment.basketRecyclerView?.adapter?.let {
                             temp.clear()
-                            temp.addAll(BasketProduct.products)
-                            BasketProduct.products.clear()
-                            BasketProduct.products.addAll(sorting.sortPrice(temp))
+                            temp.addAll((it as BasketRecyclerViewAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortPrice(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
+
+                        favoriteFragment.favoriteRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll((it as FavoriteRecyclerViewAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortPrice(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
                         }
                     }
                     sortName[3] -> {
                         shopFragment.productRecyclerView?.adapter?.let {
                             temp.clear()
-                            temp.addAll(Product.products)
-                            Product.products.clear()
-                            Product.products.addAll(sorting.sortPriceDec(temp))
+                            temp.addAll((it as ProductAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortPriceDec(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
+
+                            shopFragment.shopProducts = sorting.sortPriceDec(shopFragment.shopProducts).toMutableList()
                         }
 
                         basketFragment.basketRecyclerView?.adapter?.let {
                             temp.clear()
-                            temp.addAll(BasketProduct.products)
-                            BasketProduct.products.clear()
-                            BasketProduct.products.addAll(sorting.sortPriceDec(temp))
+                            temp.addAll((it as BasketRecyclerViewAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortPriceDec(temp))
+                            it.notifyItemRangeChanged(0, it.itemCount)
+                        }
+
+                        favoriteFragment.favoriteRecyclerView?.adapter?.let {
+                            temp.clear()
+                            temp.addAll((it as FavoriteRecyclerViewAdapter).products)
+                            it.products.clear()
+                            it.products.addAll(sorting.sortPriceDec(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
                         }
                     }
@@ -335,19 +381,26 @@ class MainActivity : AppCompatActivity() {
         productDatabase.readProduct { products ->
             Product.products.clear()
             Product.products.addAll(products)
+            shopFragment.shopProducts.addAll(products)
             shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
-            Log.d("productArray", Product.products.toString())
+
+            Firebase.auth.currentUser?.uid?.let {
+                productDatabase.getFromFavorite(it) { products ->
+                    FavoriteProduct.products.clear()
+                    FavoriteProduct.products.addAll(products)
+                    favoriteFragment.favoriteRecyclerView?.adapter?.notifyDataSetChanged()
+                    shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
+                }
+
+                productDatabase.getFromBasket(it) { products ->
+                    BasketProduct.products.clear()
+                    BasketProduct.products.addAll(products)
+                    basketFragment.basketRecyclerView?.adapter?.notifyDataSetChanged()
+                    shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
+                }
+            }
+
             binding.progressBar.visibility = ProgressBar.GONE
         }
-
-        productDatabase.getFromBasket(Firebase.auth.currentUser?.uid.toString()) { products ->
-            BasketProduct.products.clear()
-            BasketProduct.products.addAll(products)
-            basketFragment.basketRecyclerView?.adapter?.notifyDataSetChanged()
-        }
     }
-
-
-
-
 }

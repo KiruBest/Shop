@@ -28,7 +28,7 @@
             style="@style/nav_item"
             android:layout_marginEnd="6dp"
             android:layout_weight="1"
-            android:text="Детская" />
+            android:text="@string/categoryChild" />
 
         <TextView
             android:id="@+id/man"
@@ -36,14 +36,14 @@
             android:layout_marginStart="6dp"
             android:layout_marginEnd="6dp"
             android:layout_weight="1"
-            android:text="Мужская" />
+            android:text="@string/categoryMan" />
 
         <TextView
             android:id="@+id/woman"
             style="@style/nav_item"
             android:layout_marginStart="6dp"
             android:layout_weight="1"
-            android:text="Женская" />
+            android:text="@string/categoryWoman" />
 
     </LinearLayout>
 
@@ -65,7 +65,6 @@
         android:layout_marginBottom="8dp"
         android:contentDescription="Move add activity"
         android:src="@drawable/ic_baseline_add_24"
-        android:visibility="gone"
-        />
+        android:visibility="visible" />
 
 </LinearLayout>

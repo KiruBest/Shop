@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ProductDatabase private constructor() : IProductDatabase {
-    private var cashProducts: MutableList<Product> = mutableListOf<Product>()
+    private var cashProducts: MutableList<Product> = mutableListOf()
 
     //Добавление всех товаров из БД
     override fun readProduct(callback: (products: MutableList<Product>) -> Unit) {
@@ -147,6 +147,60 @@ class ProductDatabase private constructor() : IProductDatabase {
             })
     }
 
+    override fun addToFavorite(productID: String, uid: String) {
+        Firebase.database.reference.child("favorite").child("${uid}_${productID}")
+            .setValue(productID)
+    }
+
+    override fun getFromFavorite(uid: String, callback: (products: MutableList<Product>) -> Unit) {
+        val favoriteProducts = mutableListOf<Product>()
+
+        Firebase.database.getReference("favorite")
+            .addValueEventListener(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    favoriteProducts.clear()
+
+                    snapshot.children.forEach { favoriteProduct ->
+                        cashProducts.forEach { product ->
+                            if (favoriteProduct.key == "${uid}_${product.id}") {
+                                favoriteProducts.add(product)
+                            }
+                        }
+                    }
+
+                    callback.invoke(favoriteProducts)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
+                }
+            })
+    }
+
+    override fun dropProductFromFavorite(
+        uid: String,
+        productID: String,
+        callback: (status: Boolean) -> Unit
+    ) {
+        Firebase.database.getReference("favorite")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach { favoriteProduct ->
+                        if (favoriteProduct.key == "${uid}_${productID}") favoriteProduct.ref.removeValue()
+                    }
+
+                    callback.invoke(true)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
+                    callback.invoke(false)
+                }
+            })
+    }
+
     companion object {
         private var productDatabase: IProductDatabase? = null
         fun instance(): IProductDatabase {
@@ -159,7 +213,12 @@ class ProductDatabase private constructor() : IProductDatabase {
 interface IProductDatabase {
     fun readProduct(callback: (products: MutableList<Product>) -> Unit)
     fun writeProduct(product: Product, imageUri: Uri, callback: (status: Boolean) -> Unit)
+
     fun addToBasket(productID: String, uid: String, count: Int)
     fun getFromBasket(uid: String, callback: (products: MutableList<Product>) -> Unit)
     fun dropProductFromBasket(uid: String, productID: String, callback: (status: Boolean) -> Unit)
+
+    fun addToFavorite(productID: String, uid: String)
+    fun getFromFavorite(uid: String, callback: (products: MutableList<Product>) -> Unit)
+    fun dropProductFromFavorite(uid: String, productID: String, callback: (status: Boolean) -> Unit)
 }

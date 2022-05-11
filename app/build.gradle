@@ -11,8 +11,8 @@ android {
 
     defaultConfig {
         applicationId "com.shop"
-        minSdk 21
-        targetSdk 31
+        minSdk 23
+        targetSdk 30
         versionCode 1
         versionName "1.0"
 
