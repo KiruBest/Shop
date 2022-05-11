@@ -6,25 +6,132 @@
     android:layout_height="match_parent"
     tools:context=".ui.productpage.ProductPageActivity">
 
-  <androidx.appcompat.widget.Toolbar
-      android:id="@+id/mainToolbar"
-      style="@style/Widget.Material3.CollapsingToolbar.Medium"
-      android:layout_width="0dp"
-      android:layout_height="@dimen/toolbar_height"
-      android:background="@drawable/toolbar_gradient"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mainToolbar"
+        style="@style/Widget.Material3.CollapsingToolbar.Medium"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@drawable/toolbar_gradient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-  <ImageView
-      android:id="@+id/productPhoto"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="32dp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/mainToolbar"
-      tools:srcCompat="@tools:sample/avatars" />
+    <ImageView
+        android:id="@+id/productPhoto"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainToolbar"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/textViewTitleProduct"
+        style="@style/text_view_add_basket_style"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="50dp"
+        android:text="Название"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/productPhoto"
+        />
+
+    <TextView
+        android:id="@+id/textViewPriceProduct"
+        style="@style/text_view_add_basket_style"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginTop="20dp"
+        android:text="Цена"
+        app:layout_constraintEnd_toStartOf="@+id/textViewRuble"
+        app:layout_constraintTop_toBottomOf="@+id/productPhoto" />
+
+    <TextView
+        android:id="@+id/textViewRuble"
+        style="@style/text_view_add_basket_style"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/payment_ruble"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/productPhoto" />
+
+    <TextView
+        android:id="@+id/textViewDescriptionProduct"
+        style="@style/text_view_add_basket_italic_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="50dp"
+        android:text="@string/product_adding_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitleProduct" />
+
+    <Spinner
+        android:id="@+id/spinnerSize"
+        style="@style/spinner_category_style"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="50dp"
+        android:entries="@array/string_array_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDescriptionProduct" />
+
+    <TextView
+        android:id="@+id/textViewSize"
+        style="@style/text_view_add_basket_italic_style"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/add_basket_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSize" />
+
+    <TextView
+        android:id="@+id/textViewSelected"
+        style="@style/nav_item"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:hint="41"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/textViewSize"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSize" />
+
+    <ImageView
+        android:id="@+id/imageViewFavorite"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="48dp"
+        android:clickable="true"
+        android:contentDescription="star"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSize"
+        app:srcCompat="@drawable/ic_baseline_star_20"
+        app:tint="@color/favorite_add_color_changer" />
+
+    <Button
+        android:id="@+id/buttonAddBasket"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/nav_rectangle_not_active"
+        android:text="@string/add_basket_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSize" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

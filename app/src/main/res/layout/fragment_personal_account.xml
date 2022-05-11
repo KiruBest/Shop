@@ -172,7 +172,7 @@
             android:background="@drawable/nav_rectangle_not_active"
             android:gravity="center"
             android:hint="@string/delivery_flat_hint"
-            android:inputType="text" />
+            android:inputType="numberDecimal"/>
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -200,7 +200,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="20dp"
             android:hint="@string/age_hint"
-            android:inputType="text"
+            android:inputType="numberDecimal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ageTextView"

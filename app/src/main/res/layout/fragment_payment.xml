@@ -25,7 +25,7 @@
             android:background="@drawable/nav_rectangle_not_active"
             android:gravity="center"
             android:hint="@string/payment_card_number"
-            android:inputType="text"
+            android:inputType="numberDecimal"
             app:layout_constraintEnd_toStartOf="@+id/imageViewTypeCard"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +63,7 @@
             android:background="@drawable/nav_rectangle_not_active"
             android:gravity="center"
             android:hint="@string/payment_cvv"
-            android:inputType="text"
+            android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editViewCardNumber" />
 
@@ -232,7 +232,7 @@
                 android:background="@drawable/nav_rectangle_not_active"
                 android:gravity="center"
                 android:hint="@string/delivery_flat_hint"
-                android:inputType="text" />
+                android:inputType="numberDecimal"/>
         </LinearLayout>
 
         <EditText
