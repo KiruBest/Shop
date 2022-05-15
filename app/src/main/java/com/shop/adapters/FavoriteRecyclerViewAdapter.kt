@@ -42,6 +42,8 @@ class FavoriteRecyclerViewAdapter(
             .load(products[position].photo)
             .into(holder.photo)
 
+        holder.basket.isActivated = false
+
         BasketProduct.products.forEach { basketProduct ->
             if (basketProduct.id == products[position].id) holder.basket.isActivated = true
         }

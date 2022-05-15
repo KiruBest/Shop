@@ -45,6 +45,9 @@ class ProductAdapter(
             .load(products[position].photo)
             .into(holder.photo)
 
+        holder.basketButton.isActivated = false
+        holder.favoriteButton.isActivated = false
+
         holder.photo.setOnClickListener {
             onItemClick(products[position])
         }

@@ -44,20 +44,9 @@
         style="@style/text_view_add_basket_style"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginEnd="3dp"
         android:layout_marginTop="20dp"
-        android:text="Цена"
-        app:layout_constraintEnd_toStartOf="@+id/textViewRuble"
-        app:layout_constraintTop_toBottomOf="@+id/productPhoto" />
-
-    <TextView
-        android:id="@+id/textViewRuble"
-        style="@style/text_view_add_basket_style"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
         android:layout_marginEnd="50dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/payment_ruble"
+        android:text="Цена"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/productPhoto" />
 
@@ -80,7 +69,6 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
-        android:entries="@array/string_array_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDescriptionProduct" />

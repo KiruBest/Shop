@@ -1,8 +1,6 @@
 package com.shop.ui.personalaccount
 
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
@@ -20,15 +19,26 @@ import com.shop.firebase.UserDatabase
 import com.shop.models.User
 import com.shop.ui.main.MainActivity
 
-
-const val REQUEST_IMAGE_GET = 1
-
 class PersonalAccount : Fragment() {
 
     private var _binding: FragmentPersonalAccountBinding? = null
     private val binding get() = _binding!!
 
     private val userDatabase = UserDatabase.instance()
+
+    private val getContent =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { userPhoto ->
+            userDatabase.saveProfilePhoto(Firebase.auth.uid.toString(), userPhoto) { url ->
+                User.currentUser?.let {
+                    it.photo = url
+                    Glide.with(requireContext()).load(it.photo).into(binding.accountImage)
+                    requireActivity().invalidateOptionsMenu()
+                }
+            }
+
+            Toast.makeText(requireContext(), "Не забудьте сохранить изменения", Toast.LENGTH_SHORT)
+                .show()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,9 +107,8 @@ class PersonalAccount : Fragment() {
         user.age?.let { binding.ageText.setText(it.toString()) }
     }
 
-    //TODO(Здесь логика смены фото профиля)
     private fun changeProfilePhoto() {
-        openGallery()
+        getContent.launch("image/*")
     }
 
     private fun changeUserData() {
@@ -135,34 +144,5 @@ class PersonalAccount : Fragment() {
             Firebase.auth.currentUser?.uid.toString(),
             User.currentUser!!
         )
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK && data != null) {
-            data.data?.let { userPhoto ->
-                userDatabase.saveProfilePhoto(Firebase.auth.uid.toString(), userPhoto) { url ->
-                    User.currentUser?.let {
-                        it.photo = url
-                        Glide.with(requireContext()).load(it.photo).into(binding.accountImage)
-                        requireActivity().invalidateOptionsMenu()
-                    }
-                }
-            }
-
-            Toast.makeText(requireContext(), "Не забудьте сохранить изменения", Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
-
-    @SuppressLint("QueryPermissionsNeeded")
-    private fun openGallery() {
-        val openGalleryIntent = Intent()
-        openGalleryIntent.action = Intent.ACTION_GET_CONTENT
-        openGalleryIntent.type = "image/*"
-        if (openGalleryIntent.resolveActivity(requireActivity().packageManager) != null) {
-            startActivityForResult(openGalleryIntent, REQUEST_IMAGE_GET)
-        }
     }
 }

@@ -381,6 +381,7 @@ class MainActivity : AppCompatActivity() {
         productDatabase.readProduct { products ->
             Product.products.clear()
             Product.products.addAll(products)
+            shopFragment.shopProducts.clear()
             shopFragment.shopProducts.addAll(products)
             shopFragment.productRecyclerView?.adapter?.notifyDataSetChanged()
 

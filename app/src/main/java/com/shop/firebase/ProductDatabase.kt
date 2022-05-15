@@ -81,7 +81,7 @@ class ProductDatabase private constructor() : IProductDatabase {
                             Log.d("successful", "Successful")
                             product.photo = it.result.toString()
                             Firebase.database.reference.child("products")
-                                .child("${product.title}$key").setValue(product)
+                                .child("${product.title}_$key").setValue(product)
 
                             callback.invoke(true)
                         }

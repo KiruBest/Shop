@@ -71,20 +71,18 @@
         <item>@string/categoryWoman</item>
     </string-array>
 
-    <string-array name="string_array_size">
-        <item>Выберать размер</item>
-        <item>39</item>
-        <item>40</item>
-        <item>41</item>
-        <item>42</item>
-        <item>43</item>
-        <item>44</item>
-        <item>45</item>
-    </string-array>
+    <string name="pick_size">Выберать размер</string>
 
     <string name="title_activity_product">ProductActivity</string>
 
     <string name="categoryChild">Детская</string>
     <string name="categoryMan">Мужская</string>
     <string name="categoryWoman">Женская</string>
+    <string name="pick_photo">Выберете фото товара</string>
+    <string name="pick_category">Выберете категорию товара</string>
+    <string name="title_require">Введите название товара</string>
+    <string name="description_require">Введите описание</string>
+    <string name="price_require">Введите цену</string>
+    <string name="size_require">Введите как минимум один размер</string>
+    <string name="add_product_successfull">Товар добавлен</string>
 </resources>
