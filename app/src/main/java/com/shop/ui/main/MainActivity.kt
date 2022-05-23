@@ -30,9 +30,11 @@ import com.shop.models.FavoriteProduct
 import com.shop.models.Product
 import com.shop.models.User
 import com.shop.sort.Sorting
+import com.shop.ui.admin.ADMIN_ID
+import com.shop.ui.chat.AdminChatActivity
+import com.shop.ui.chat.ChatActivity
 import com.shop.ui.personalaccount.PersonalAccount
 import com.shop.ui.register.AuthActivity
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 
 class MainActivity : AppCompatActivity() {
@@ -74,9 +76,6 @@ class MainActivity : AppCompatActivity() {
 
         //Здесь теоретически будут пункты сортировки, но я думаю надо будет сделать по-другому
         initSortSpinner()
-
-        //Это просто для красоты, добавляется overscroll
-        OverScrollDecoratorHelper.setUpOverScroll(binding.scrollView)
     }
 
     //Таким образом в actionBar добавляется меню
@@ -123,7 +122,12 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
             R.id.chat -> {
-                //TODO(Тут реализовать чат)
+                val intent: Intent = if (Firebase.auth.currentUser?.uid == ADMIN_ID) {
+                    Intent(this, AdminChatActivity::class.java)
+                } else {
+                    Intent(this, ChatActivity::class.java)
+                }
+                startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -265,7 +269,8 @@ class MainActivity : AppCompatActivity() {
                             it.products.addAll(sorting.sortNameDec(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
 
-                            shopFragment.shopProducts = sorting.sortNameDec(shopFragment.shopProducts).toMutableList()
+                            shopFragment.shopProducts =
+                                sorting.sortNameDec(shopFragment.shopProducts).toMutableList()
                         }
 
                         basketFragment.basketRecyclerView?.adapter?.let {
@@ -292,7 +297,8 @@ class MainActivity : AppCompatActivity() {
                             it.products.addAll(sorting.sortName(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
 
-                            shopFragment.shopProducts = sorting.sortName(shopFragment.shopProducts).toMutableList()
+                            shopFragment.shopProducts =
+                                sorting.sortName(shopFragment.shopProducts).toMutableList()
                         }
 
                         basketFragment.basketRecyclerView?.adapter?.let {
@@ -319,7 +325,8 @@ class MainActivity : AppCompatActivity() {
                             it.products.addAll(sorting.sortPrice(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
 
-                            shopFragment.shopProducts = sorting.sortPrice(shopFragment.shopProducts).toMutableList()
+                            shopFragment.shopProducts =
+                                sorting.sortPrice(shopFragment.shopProducts).toMutableList()
                         }
 
                         basketFragment.basketRecyclerView?.adapter?.let {
@@ -346,7 +353,8 @@ class MainActivity : AppCompatActivity() {
                             it.products.addAll(sorting.sortPriceDec(temp))
                             it.notifyItemRangeChanged(0, it.itemCount)
 
-                            shopFragment.shopProducts = sorting.sortPriceDec(shopFragment.shopProducts).toMutableList()
+                            shopFragment.shopProducts =
+                                sorting.sortPriceDec(shopFragment.shopProducts).toMutableList()
                         }
 
                         basketFragment.basketRecyclerView?.adapter?.let {

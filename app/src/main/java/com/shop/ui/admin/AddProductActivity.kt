@@ -74,6 +74,8 @@ class AddProductActivity : AppCompatActivity() {
                 ).show()
 
                 else -> {
+                    it.isEnabled = false
+
                     product.category = binding.spinnerCategory.selectedItem.toString()
                     product.title = binding.textViewTitleProduct.text.toString().trim()
                     product.description = binding.textViewDescriptionProduct.text.toString().trim()

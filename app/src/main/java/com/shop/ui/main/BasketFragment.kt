@@ -83,7 +83,7 @@ class BasketFragment : Fragment() {
         basketRecyclerView?.apply {
             layoutManager = object : LinearLayoutManager(requireContext()) {
                 override fun canScrollVertically(): Boolean {
-                    return false
+                    return true
                 }
             }
             adapter = basketRecyclerViewAdapter

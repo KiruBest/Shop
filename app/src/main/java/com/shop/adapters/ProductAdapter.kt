@@ -61,14 +61,12 @@ class ProductAdapter(
         }
 
         holder.basketButton.setOnClickListener {
-            it.isActivated = !it.isActivated
             Firebase.auth.currentUser?.uid?.let { uid ->
                 onBasketClick(products[position].id, uid)
             }
         }
 
         holder.favoriteButton.setOnClickListener {
-            it.isActivated = !it.isActivated
             Firebase.auth.currentUser?.uid?.let { uid ->
                 onFavoriteClick(products[position].id, uid)
             }

@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.shop.R
@@ -89,12 +90,22 @@ class ShopFragment : Fragment() {
                     }
                 }
 
-                productDatabase.addToBasket(productID, uid, 1)
-                Toast.makeText(
-                    requireContext(),
-                    "Объект добавлен в корзину",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Product.products.forEach {
+                    if (it.id == productID) {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(resources.getString(R.string.pick_size))
+                            .setItems(it.sizes.toTypedArray()) { _, _ ->
+                                productDatabase.addToBasket(productID, uid, 1)
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Объект добавлен в корзину",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            .show()
+                        return@ProductAdapter
+                    }
+                }
             },
 
             onFavoriteClick = { productID, uid ->
@@ -120,19 +131,11 @@ class ShopFragment : Fragment() {
             }
         )
 
-        //Grid layout позволяет располагать товары в 2 столбца
-        val gridLayoutManager = object : GridLayoutManager(requireContext(), 2) {
-            //Запрет скролла самого view, это для красоты и удобства
-            override fun canScrollVertically(): Boolean {
-                return false
-            }
-        }
-
         productRecyclerView = binding.productRecyclerView
 
         //Менеджер и адаптер привязывается к RecyclerView
         productRecyclerView?.apply {
-            layoutManager = gridLayoutManager
+            layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = productAdapter
         }
     }

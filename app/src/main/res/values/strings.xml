@@ -71,7 +71,7 @@
         <item>@string/categoryWoman</item>
     </string-array>
 
-    <string name="pick_size">Выберать размер</string>
+    <string name="pick_size">Выбирете размер</string>
 
     <string name="title_activity_product">ProductActivity</string>
 
@@ -85,4 +85,8 @@
     <string name="price_require">Введите цену</string>
     <string name="size_require">Введите как минимум один размер</string>
     <string name="add_product_successfull">Товар добавлен</string>
+    <string name="input_message">Введите ваше сообщение</string>
+    <string name="send_message">send message</string>
+    <string name="close">Закрыть</string>
+    <string name="Admin">Администратор</string>
 </resources>

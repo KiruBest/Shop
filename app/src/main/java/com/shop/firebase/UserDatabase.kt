@@ -30,6 +30,7 @@ class UserDatabase private constructor() : IUserDatabase {
                     snapshot.children.forEach {
                         if (it.key == uid) {
                             val user: User = it.getValue(User::class.java)!!
+                            user.uid = it.key!!
                             callback.invoke(user)
                             Log.d(TAG, user.toString())
                             return

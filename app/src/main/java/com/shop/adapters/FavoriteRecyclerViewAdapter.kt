@@ -2,6 +2,7 @@ package com.shop.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -15,7 +16,7 @@ class FavoriteRecyclerViewAdapter(
     val products: MutableList<Product>,
     private val onItemClick: (product: Product) -> Unit,
     private val onCloseClick: (productID: String) -> Unit,
-    private val onBasketClick: (productID: String, uid: String) -> Unit
+    private val onBasketClick: (productID: String, uid: String, view: View) -> Unit
 ) : RecyclerView.Adapter<FavoriteRecyclerViewAdapter.BasketProductHolder>() {
 
     inner class BasketProductHolder(binding: LayoutFavoriteItemBinding) :
@@ -57,9 +58,8 @@ class FavoriteRecyclerViewAdapter(
         }
 
         holder.basket.setOnClickListener {
-            it.isActivated = !it.isActivated
             Firebase.auth.currentUser?.uid?.let { uid ->
-                onBasketClick(products[position].id, uid)
+                onBasketClick(products[position].id, uid, it)
             }
         }
     }

@@ -11,13 +11,16 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.shop.R
 import com.shop.adapters.FavoriteRecyclerViewAdapter
 import com.shop.databinding.FragmentFavoriteBinding
 import com.shop.firebase.ProductDatabase
 import com.shop.models.BasketProduct
 import com.shop.models.FavoriteProduct
+import com.shop.models.Product
 import com.shop.ui.productpage.ProductPageActivity
 
 class FavoriteFragment : Fragment() {
@@ -43,78 +46,89 @@ class FavoriteFragment : Fragment() {
 
         emptyListCheck()
 
+        val favoriteAdapter = FavoriteRecyclerViewAdapter(
+            FavoriteProduct.products,
+
+            onItemClick = { product ->
+                val intent = Intent(requireContext(), ProductPageActivity::class.java)
+                intent.putExtra("product", product)
+                requireActivity().startActivity(intent)
+            },
+
+            onBasketClick = { productID, uid, v ->
+                BasketProduct.products.forEach {
+                    if (it.id == productID) {
+                        productDatabase.dropProductFromBasket(uid, productID) {
+                            Toast.makeText(
+                                requireContext(),
+                                "Объект удален из корзины",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            v.isActivated = false
+                        }
+
+                        return@FavoriteRecyclerViewAdapter
+                    }
+                }
+
+                Product.products.forEach {
+                    if (it.id == productID) {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(resources.getString(R.string.pick_size))
+                            .setItems(it.sizes.toTypedArray()) { dialog, which ->
+                                productDatabase.addToBasket(productID, uid, 1)
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Объект добавлен в корзину",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                v.isActivated = true
+                            }.show()
+                        return@FavoriteRecyclerViewAdapter
+                    }
+                }
+            },
+
+            onCloseClick = { productID ->
+                productDatabase.dropProductFromFavorite(
+                    Firebase.auth.currentUser?.uid.toString(),
+                    productID
+                ) { status ->
+                    if (status) {
+                        for (i in 0 until FavoriteProduct.products.size) {
+                            if (FavoriteProduct.products[i].id == productID) {
+                                FavoriteProduct.products.removeAt(i)
+                                break
+                            }
+                        }
+
+                        emptyListCheck()
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Объект удален из избранного",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        )
+
         favoriteRecyclerView = binding.recyclerViewFavorite
 
         favoriteRecyclerView?.apply {
-            adapter = FavoriteRecyclerViewAdapter(
-                FavoriteProduct.products,
-
-                onItemClick = { product ->
-                    val intent = Intent(requireContext(), ProductPageActivity::class.java)
-                    intent.putExtra("product", product)
-                    requireActivity().startActivity(intent)
-                },
-
-                onCloseClick = { productID ->
-                    productDatabase.dropProductFromFavorite(
-                        Firebase.auth.currentUser?.uid.toString(),
-                        productID
-                    ) { status ->
-                        if (status) {
-                            for (i in 0 until FavoriteProduct.products.size) {
-                                if (FavoriteProduct.products[i].id == productID) {
-                                    adapter?.notifyItemRemoved(i)
-                                    adapter?.notifyDataSetChanged()
-                                    FavoriteProduct.products.removeAt(i)
-                                    break
-                                }
-                            }
-
-                            emptyListCheck()
-
-                            Toast.makeText(
-                                requireContext(),
-                                "Объект удален из избранного",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                },
-
-                onBasketClick = { productID, uid ->
-                    BasketProduct.products.forEach {
-                        if (it.id == productID) {
-                            productDatabase.dropProductFromBasket(uid, productID) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Объект удален из корзины",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-
-                            return@FavoriteRecyclerViewAdapter
-                        }
-                    }
-
-                    productDatabase.addToBasket(productID, uid, 1)
-                    Toast.makeText(
-                        requireContext(),
-                        "Объект добавлен в корзину",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            )
+            adapter = favoriteAdapter
 
             layoutManager = object : LinearLayoutManager(requireContext()) {
                 override fun canScrollVertically(): Boolean {
-                    return false
+                    return true
                 }
             }
         }
     }
 
     private fun emptyListCheck() {
-        if(FavoriteProduct.products.isEmpty()) {
+        if (FavoriteProduct.products.isEmpty()) {
             binding.textViewEmptyWarning.visibility = TextView.VISIBLE
         }
     }
