@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.shop.R
 import com.shop.adapters.ChatAdapter
 import com.shop.databinding.FragmentAdminChatWithUserBinding
 import com.shop.firebase.MessageDatabaseObject
@@ -19,7 +20,7 @@ class AdminChatWithUserFragment : Fragment() {
 
     private lateinit var binding: FragmentAdminChatWithUserBinding
     private lateinit var chatAdapter: ChatAdapter
-    private lateinit var messages: MutableList<MessageModel>
+    private val messages: MutableList<MessageModel> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,15 +39,18 @@ class AdminChatWithUserFragment : Fragment() {
         binding.textViewProfile.text = user.email
 
         MessageDatabaseObject.getAllMessage {
-            messages = it
+            it.forEach { message ->
+                if(user.uid == message.userID) {
+                    messages.add(message)
+                }
+            }
+
             chatAdapter = ChatAdapter(messages)
 
             binding.recyclerViewMessage.apply {
                 adapter = chatAdapter
                 layoutManager = LinearLayoutManager(requireContext())
             }
-
-            scrollDown()
         }
 
         binding.buttonSendMessage.setOnClickListener {
@@ -63,7 +67,10 @@ class AdminChatWithUserFragment : Fragment() {
         }
 
         binding.buttonClose.setOnClickListener {
-            (requireActivity() as AdminChatActivity).closeClickListener()
+            requireActivity().supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragmentChatContainer, AdminUsersMessage())
+                .commit()
         }
     }
 

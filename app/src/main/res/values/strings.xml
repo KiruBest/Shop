@@ -71,7 +71,7 @@
         <item>@string/categoryWoman</item>
     </string-array>
 
-    <string name="pick_size">Выбирете размер</string>
+    <string name="pick_size">Выберите размер</string>
 
     <string name="title_activity_product">ProductActivity</string>
 
