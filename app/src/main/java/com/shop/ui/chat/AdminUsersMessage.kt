@@ -29,6 +29,8 @@ class AdminUsersMessage : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val layoutManagerMy = LinearLayoutManager(requireContext())
+
         val adminChatPickerAdapter = AdminChatPickerAdapter { user ->
             val bundle = Bundle()
             bundle.putParcelable("user", user)
@@ -50,11 +52,11 @@ class AdminUsersMessage : Fragment() {
                     }
                 }
             }
+        }
 
-            binding.recyclerViewUsers.apply {
-                adapter = adminChatPickerAdapter
-                layoutManager = LinearLayoutManager(requireContext())
-            }
+        binding.recyclerViewUsers.apply {
+            adapter = adminChatPickerAdapter
+            layoutManager = layoutManagerMy
         }
     }
 }

@@ -16,22 +16,23 @@ class ChatActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatBinding
     private lateinit var chatAdapter: ChatAdapter
-    private lateinit var messages: MutableList<MessageModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        chatAdapter = ChatAdapter()
+
+        binding.recyclerViewMessage.apply {
+            adapter = chatAdapter
+            layoutManager = LinearLayoutManager(this@ChatActivity)
+        }
+
         MessageDatabaseObject.getAllMessage {
-            messages = it
-            chatAdapter = ChatAdapter(messages)
-
-            binding.recyclerViewMessage.apply {
-                adapter = chatAdapter
-                layoutManager = LinearLayoutManager(this@ChatActivity)
+            it.forEach { mes ->
+                chatAdapter.addMessage(mes)
             }
-
             scrollDown()
         }
 

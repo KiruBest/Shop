@@ -20,7 +20,6 @@ class AdminChatWithUserFragment : Fragment() {
 
     private lateinit var binding: FragmentAdminChatWithUserBinding
     private lateinit var chatAdapter: ChatAdapter
-    private val messages: MutableList<MessageModel> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,18 +37,18 @@ class AdminChatWithUserFragment : Fragment() {
         Glide.with(requireActivity()).load(user.photo).into(binding.imageViewAvatar)
         binding.textViewProfile.text = user.email
 
+        chatAdapter = ChatAdapter()
+
+        binding.recyclerViewMessage.apply {
+            adapter = chatAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+
         MessageDatabaseObject.getAllMessage {
             it.forEach { message ->
                 if(user.uid == message.userID) {
-                    messages.add(message)
+                    chatAdapter.addMessage(message)
                 }
-            }
-
-            chatAdapter = ChatAdapter(messages)
-
-            binding.recyclerViewMessage.apply {
-                adapter = chatAdapter
-                layoutManager = LinearLayoutManager(requireContext())
             }
         }
 
