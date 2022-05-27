@@ -1,60 +1,71 @@
 package com.shop.ui.payment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.redmadrobot.inputmask.MaskedTextChangedListener
 import com.shop.R
+import com.shop.databinding.FragmentPaymentBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class PaymentFragment : Fragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [Payment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class Payment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentPaymentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_payment, container, false)
+    ): View {
+        binding = FragmentPaymentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Payment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Payment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val bundle = requireArguments()
+        binding.textViewPaymentEndSumValue.text = bundle.getString("sum")
+
+        binding.editViewCardNumber.addTextChangedListener(
+            MaskedTextChangedListener(
+                "[0000] [0000] [0000] [0000]",
+                binding.editViewCardNumber
+            )
+        )
+
+        binding.editViewMonth.addTextChangedListener(
+            MaskedTextChangedListener(
+                "[00]{/}[00]]",
+                binding.editViewMonth
+            )
+        )
+
+        binding.editViewCVV.addTextChangedListener(
+            MaskedTextChangedListener(
+                "[000]",
+                binding.editViewCVV
+            )
+        )
+
+        binding.buttonPaymentPay.setOnClickListener {
+            when {
+                binding.editViewCardNumber.text.length != 19 -> Toast.makeText(requireContext(), "Неверный номер карты", Toast.LENGTH_SHORT)
+                    .show()
+                binding.editViewMonth.text.length != 5 -> Toast.makeText(requireContext(), "Неверная дата", Toast.LENGTH_SHORT)
+                    .show()
+                binding.editViewCVV.text.length != 3 -> Toast.makeText(requireContext(), "Неверный код CVC/CVV", Toast.LENGTH_SHORT)
+                    .show()
+                binding.editViewNameCardholder.text.isEmpty() -> Toast.makeText(requireContext(), "Неверно указаны имя и фамилия", Toast.LENGTH_SHORT)
+                    .show()
+                else -> Toast.makeText(requireContext(), "Оплачено", Toast.LENGTH_SHORT)
+                    .show()
             }
+
+        }
     }
+
+
 }

@@ -9,15 +9,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.shop.R
 import com.shop.adapters.BasketRecyclerViewAdapter
 import com.shop.databinding.FragmentBasketBinding
 import com.shop.firebase.ProductDatabase
 import com.shop.models.BasketProduct
+import com.shop.ui.payment.PaymentFragment
 import com.shop.ui.productpage.ProductPageActivity
 
 class BasketFragment : Fragment() {
@@ -90,6 +93,14 @@ class BasketFragment : Fragment() {
         }
 
         sum()
+        binding.buttonPay.setOnClickListener {
+            val bundle = bundleOf("sum" to sum())
+            val fragment = PaymentFragment()
+            fragment.arguments = bundle
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView,fragment).commit()
+        }
+
     }
 
     override fun onDestroy() {
@@ -98,19 +109,20 @@ class BasketFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    fun sum() {
+    fun sum(): String {
+        var sum = 0f
         binding.textViewSum.apply {
-            var sum = 0f
             BasketProduct.products.forEach {
                 sum += it.count * it.price
             }
 
             text = "$sum₽"
         }
+        return "$sum₽"
     }
 
     private fun emptyListCheck() {
-        if(BasketProduct.products.isEmpty()) {
+        if (BasketProduct.products.isEmpty()) {
             binding.textViewEmptyWarning.visibility = TextView.VISIBLE
             binding.constraintLayoutBottom.visibility = ConstraintLayout.GONE
         }
