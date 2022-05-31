@@ -78,6 +78,10 @@ class BasketFragment : Fragment() {
                         ).show()
                     }
                 }
+            },
+
+            countChangeCallback = {
+                sum()
             }
         )
 

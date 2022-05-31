@@ -13,6 +13,7 @@
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.106" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.2115" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/ic_png.xml" value="0.2115" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/message_bg_selector.xml" value="0.1265" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/nav_active_pressed.xml" value="0.1" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/nav_rectangle.xml" value="0.168" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/drawable/nav_rectangle_active.xml" value="0.2405" />
@@ -37,16 +38,18 @@
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_chat.xml" value="0.22780797101449277" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_product_page.xml" value="0.264" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_account_login_details.xml" value="0.10989583333333333" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_admin_chat_with_user.xml" value="0.22780797101449277" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_admin_users_message.xml" value="0.22780797101449277" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_applay_payment.xml" value="0.22780797101449277" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_auth.xml" value="0.2359375" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_basket.xml" value="0.25" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_chat.xml" value="0.2891566265060241" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_favorite.xml" value="0.25" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_register.xml" value="0.25" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_shop.xml" value="0.264" />
-        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/layout_basket_product_item.xml" value="0.22780797101449277" />
-        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/layout_message_item.xml" value="0.22780797101449277" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/layout_basket_product_item.xml" value="0.4" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/layout_message_item.xml" value="0.2" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/layout_user_item.xml" value="0.22780797101449277" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/product_cart.xml" value="0.264" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/sort_spinner_layout.xml" value="0.25" />

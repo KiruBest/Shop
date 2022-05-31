@@ -3,6 +3,8 @@ package com.shop.adapters
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -18,7 +20,7 @@ class ChatAdapter() :
     inner class ChatHolder(private val binding: LayoutMessageItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val textMessage = binding.textViewMessageText
-        val textViewUser = binding.textViewUser
+        //val textViewUser = binding.textViewUser
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatHolder {
@@ -29,14 +31,22 @@ class ChatAdapter() :
 
     override fun onBindViewHolder(holder: ChatHolder, position: Int) {
         holder.textMessage.text = _messageList[position].message
+
+        val layout = holder.itemView as LinearLayout
         if (_messageList[position].adminSendCheck && Firebase.auth.currentUser?.uid == ADMIN_ID) {
-            holder.textViewUser.text = "Вы"
+            layout.gravity = GravityCompat.START
+            //holder.textViewUser.text = "Вы"
         } else if (_messageList[position].adminSendCheck && Firebase.auth.currentUser?.uid != ADMIN_ID) {
-            holder.textViewUser.text = "Администратор"
+            layout.gravity = GravityCompat.END
+            holder.textMessage.isActivated = true
+            //holder.textViewUser.text = "Администратор"
         } else if (!_messageList[position].adminSendCheck && Firebase.auth.currentUser?.uid == ADMIN_ID) {
-            holder.textViewUser.text = "Клиент"
+            layout.gravity = GravityCompat.END
+            holder.textMessage.isActivated = true
+            //holder.textViewUser.text = "Клиент"
         } else if (!_messageList[position].adminSendCheck && Firebase.auth.currentUser?.uid != ADMIN_ID) {
-            holder.textViewUser.text = "Вы"
+            layout.gravity = GravityCompat.START
+            //holder.textViewUser.text = "Вы"
         }
     }
 
