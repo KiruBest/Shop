@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/search_drawable" android:state_activated="false"/>
-    <item android:drawable="@drawable/auth_rectangle" android:state_activated="true"/>
+    <item android:drawable="@drawable/message_bg_right" android:state_activated="true"/>
 </selector>

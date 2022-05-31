@@ -34,18 +34,18 @@ class ChatAdapter() :
 
         val layout = holder.itemView as LinearLayout
         if (_messageList[position].adminSendCheck && Firebase.auth.currentUser?.uid == ADMIN_ID) {
-            layout.gravity = GravityCompat.START
+            layout.gravity = GravityCompat.END
+            holder.textMessage.isActivated = true
             //holder.textViewUser.text = "Вы"
         } else if (_messageList[position].adminSendCheck && Firebase.auth.currentUser?.uid != ADMIN_ID) {
-            layout.gravity = GravityCompat.END
-            holder.textMessage.isActivated = true
+            layout.gravity = GravityCompat.START
             //holder.textViewUser.text = "Администратор"
         } else if (!_messageList[position].adminSendCheck && Firebase.auth.currentUser?.uid == ADMIN_ID) {
-            layout.gravity = GravityCompat.END
-            holder.textMessage.isActivated = true
+            layout.gravity = GravityCompat.START
             //holder.textViewUser.text = "Клиент"
         } else if (!_messageList[position].adminSendCheck && Firebase.auth.currentUser?.uid != ADMIN_ID) {
-            layout.gravity = GravityCompat.START
+            layout.gravity = GravityCompat.END
+            holder.textMessage.isActivated = true
             //holder.textViewUser.text = "Вы"
         }
     }
