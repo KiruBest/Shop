@@ -11,6 +11,8 @@ import androidx.core.os.bundleOf
 import com.redmadrobot.inputmask.MaskedTextChangedListener
 import com.shop.R
 import com.shop.databinding.FragmentPaymentBinding
+import java.sql.Time
+import java.util.*
 
 class PaymentFragment : Fragment() {
 
@@ -52,19 +54,43 @@ class PaymentFragment : Fragment() {
         )
 
         binding.buttonPaymentPay.setOnClickListener {
+            val date = binding.editViewMonth.text.split("/")
+            val time = Calendar.getInstance()
+            val year = time.get(Calendar.YEAR) - 2000
+            val month = time.get(Calendar.MONTH) + 1
+
+            Log.i("TAGDATE", date[1].toInt().toString())
+
+
             when {
-                binding.editViewCardNumber.text.length != 19 -> Toast.makeText(requireContext(), "Неверный номер карты", Toast.LENGTH_SHORT)
+                binding.editViewCardNumber.text.length != 19 -> Toast.makeText(
+                    requireContext(),
+                    "Неверный номер карты",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
-                binding.editViewMonth.text.length != 5 -> Toast.makeText(requireContext(), "Неверная дата", Toast.LENGTH_SHORT)
+                binding.editViewMonth.text.length != 5 || date[0].toInt() > 12 || date[0].toInt() < month || date[1].toInt() < year -> Toast.makeText(
+                    requireContext(),
+                    "Неверная дата",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
-                binding.editViewCVV.text.length != 3 -> Toast.makeText(requireContext(), "Неверный код CVC/CVV", Toast.LENGTH_SHORT)
+                binding.editViewCVV.text.length != 3 -> Toast.makeText(
+                    requireContext(),
+                    "Неверный код CVC/CVV",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
-                binding.editViewNameCardholder.text.isEmpty() -> Toast.makeText(requireContext(), "Неверно указаны имя и фамилия", Toast.LENGTH_SHORT)
+                binding.editViewNameCardholder.text.isEmpty() -> Toast.makeText(
+                    requireContext(),
+                    "Неверно указаны имя и фамилия",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
-                else ->{
+                else -> {
                     val fragment = PaymentFragmentWait()
                     requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
-                        .replace(R.id.fragmentContainerView,fragment).commit()
+                        .replace(R.id.fragmentContainerView, fragment).commit()
                 }
             }
 
