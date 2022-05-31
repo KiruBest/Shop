@@ -94,6 +94,13 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="fragment_payment_wait_textView">
+        <item name="android:fontFamily">@font/roboto_black</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <style name="fragment_payment_textView">
         <item name="android:fontFamily">@font/roboto_black</item>
         <item name="android:textColor">@color/black</item>

@@ -101,7 +101,7 @@ class BasketFragment : Fragment() {
             val bundle = bundleOf("sum" to sum())
             val fragment = PaymentFragment()
             fragment.arguments = bundle
-            requireActivity().supportFragmentManager.beginTransaction()
+            requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
                 .replace(R.id.fragmentContainerView,fragment).commit()
         }
 
