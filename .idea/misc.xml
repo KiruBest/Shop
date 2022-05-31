@@ -36,16 +36,14 @@
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_auth.xml" value="0.176" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_chat.xml" value="0.22780797101449277" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_product_page.xml" value="0.264" />
+        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/activity_product_page.xml" value="0.22826086956521738" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_admin_chat_with_user.xml" value="0.22780797101449277" />
-        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_admin_users_message.xml" value="0.22780797101449277" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_auth.xml" value="0.2359375" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_basket.xml" value="0.25" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_chat.xml" value="0.2891566265060241" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_favorite.xml" value="0.25" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_register.xml" value="0.25" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/fragment_shop.xml" value="0.264" />
-        <entry key="..\:/Programmist/Shop/app/src/main/res/layout/layout_basket_product_item.xml" value="0.22780797101449277" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/layout_message_item.xml" value="0.22780797101449277" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/layout_user_item.xml" value="0.22780797101449277" />
         <entry key="..\:/Programmist/Shop/app/src/main/res/layout/product_cart.xml" value="0.264" />
@@ -91,16 +89,21 @@
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/basket_products.xml" value="0.264" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_account_login_details.xml" value="0.264" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_add_basket.xml" value="0.4" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_admin_chat_with_user.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_admin_users_message.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_auth.xml" value="0.2463768115942029" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_basket.xml" value="0.2463768115942029" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_favorite.xml" value="0.2463768115942029" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_payment.xml" value="0.264" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_payment_wait.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_personal_account.xml" value="0.264" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_product_adding.xml" value="0.264" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_register.xml" value="0.2463768115942029" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/fragment_shop.xml" value="0.2463768115942029" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/layout_basket_product_item.xml" value="0.4" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/layout_favorite_item.xml" value="0.2463768115942029" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/layout_message_item.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/layout_user_item.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/product_cart.xml" value="0.2463768115942029" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/sort_spinner_layout.xml" value="0.17083333333333334" />
         <entry key="..\:/Users/dimac/AndroidStudioProjects/Shop/app/src/main/res/layout/toast_personal_account.xml" value="0.25416666666666665" />
