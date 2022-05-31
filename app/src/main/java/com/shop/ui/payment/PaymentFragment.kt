@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import com.redmadrobot.inputmask.MaskedTextChangedListener
 import com.shop.R
 import com.shop.databinding.FragmentPaymentBinding
@@ -60,10 +61,16 @@ class PaymentFragment : Fragment() {
                     .show()
                 binding.editViewNameCardholder.text.isEmpty() -> Toast.makeText(requireContext(), "Неверно указаны имя и фамилия", Toast.LENGTH_SHORT)
                     .show()
-                else -> Toast.makeText(requireContext(), "Оплачено", Toast.LENGTH_SHORT)
-                    .show()
+                else ->{
+                    val fragment = PaymentFragmentWait()
+                    requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
+                        .replace(R.id.fragmentContainerView,fragment).commit()
+                }
             }
 
+        }
+        binding.buttonPaymentBack.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
         }
     }
 
