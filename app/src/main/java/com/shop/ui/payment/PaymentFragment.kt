@@ -55,11 +55,10 @@ class PaymentFragment : Fragment() {
 
         binding.buttonPaymentPay.setOnClickListener {
             val date = binding.editViewMonth.text.split("/")
-            val time = Calendar.getInstance()
+            /*val time = Calendar.getInstance()
             val year = time.get(Calendar.YEAR) - 2000
-            val month = time.get(Calendar.MONTH) + 1
+            val month = time.get(Calendar.MONTH) + 1*/
 
-            Log.i("TAGDATE", date[1].toInt().toString())
 
 
             when {
@@ -69,7 +68,7 @@ class PaymentFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 )
                     .show()
-                binding.editViewMonth.text.length != 5 || date[0].toInt() > 12 || date[0].toInt() < month || date[1].toInt() < year -> Toast.makeText(
+                binding.editViewMonth.text.length != 5 || date[0].toInt() > 12 || date[0].toInt() == 0-> Toast.makeText(
                     requireContext(),
                     "Неверная дата",
                     Toast.LENGTH_SHORT
