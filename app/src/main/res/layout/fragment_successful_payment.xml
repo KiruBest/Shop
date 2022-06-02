@@ -8,7 +8,7 @@
     tools:context=".ui.payment.PaymentFragment">
 
     <TextView
-        android:id="@+id/textViewPaymentWait"
+        android:id="@+id/textViewPaymentSuccessful"
         style="@style/fragment_payment_wait_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
