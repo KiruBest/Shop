@@ -22,7 +22,11 @@ class PaymentFragmentWait : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val handler = Handler()
-        handler.postDelayed({ requireActivity().supportFragmentManager.popBackStack() },3000)
+        handler.postDelayed({
+            val fragment = SuccessfulPayment()
+            requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
+                .replace(R.id.fragmentContainerView, fragment).commit()
+        },3000)
         super.onViewCreated(view, savedInstanceState)
     }
 

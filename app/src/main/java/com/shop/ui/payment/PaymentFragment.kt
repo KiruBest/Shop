@@ -68,7 +68,7 @@ class PaymentFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 )
                     .show()
-                binding.editViewMonth.text.length != 5 || date[0].toInt() > 12 || date[0].toInt() == 0-> Toast.makeText(
+                binding.editViewMonth.text.length != 5 || date[0].toInt() > 12 || date[0].toInt() == 0 || date[1].toInt() == 0 -> Toast.makeText(
                     requireContext(),
                     "Неверная дата",
                     Toast.LENGTH_SHORT
