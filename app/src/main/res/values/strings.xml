@@ -54,7 +54,7 @@
     <string name="product_adding_size">Размер</string>
     <string name="add_basket_size">Выбранный размер:</string>
     <string name="add_basket_add">Добавить в корзину</string>
-    <string name="payment_wait">Данные введены верно и перенаправляются в банк, пожалуйста ожидайте...</string>
+    <string name="payment_wait">Данные введены верно и перенаправляются в банк, пожалуйста ожидайте…</string>
 
     <string-array name="sort_category">
         <item>По названию (↑)</item>
@@ -88,4 +88,6 @@
     <string name="send_message">send message</string>
     <string name="close">Закрыть</string>
     <string name="Admin">Администратор</string>
+
+    <string name="price">%s₽</string>
 </resources>

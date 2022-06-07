@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -76,6 +78,27 @@ class MainActivity : AppCompatActivity() {
 
         //Здесь теоретически будут пункты сортировки, но я думаю надо будет сделать по-другому
         initSortSpinner()
+
+        binding.search.addTextChangedListener {
+            val text = it.toString()
+            if (text == "") {
+                binding.fragmentContainerView.visibility = View.VISIBLE
+                binding.searchRecyclerView.visibility = View.GONE
+            } else {
+                binding.fragmentContainerView.visibility = View.GONE
+                binding.searchRecyclerView.visibility = View.VISIBLE
+
+                val searchProducts = mutableListOf<Product>()
+
+                Product.products.forEach { prod ->
+                    if (prod.title.contains(text)) {
+                        searchProducts.add(prod)
+                    }
+                }
+
+                Log.i("taf", searchProducts.toString())
+            }
+        }
     }
 
     //Таким образом в actionBar добавляется меню

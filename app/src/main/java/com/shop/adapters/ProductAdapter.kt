@@ -1,12 +1,12 @@
 package com.shop.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.shop.R
 import com.shop.databinding.ProductCartBinding
 import com.shop.models.BasketProduct
 import com.shop.models.FavoriteProduct
@@ -37,10 +37,10 @@ class ProductAdapter(
     }
 
     //Связываются view и данные
-    @SuppressLint("SetTextI18n", "CheckResult", "NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ProductHolder, position: Int) {
+        if (position >= itemCount || itemCount <= 0) return
         holder.title.text = products[position].title
-        holder.price.text = products[position].price.toString() + "₽"
+        holder.price.text = holder.itemView.context.getString(R.string.price, products[position].price.toString())
         Glide.with(holder.itemView)
             .load(products[position].photo)
             .into(holder.photo)
