@@ -10,6 +10,10 @@
         android:id="@+id/searchRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,10 +24,10 @@
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:fillViewport="true"
         android:overScrollMode="always"
         android:scrollbars="none"
-        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -127,23 +131,6 @@
             android:layout_weight="1"
             android:text="@string/sort" />
     </LinearLayout>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navView"
-        style="@style/nav_item"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/nav_layout_height"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:itemActiveIndicatorStyle="@style/nav_item"
-        app:itemBackground="@drawable/nav_rectangle_selector"
-        app:itemShapeAppearance="@style/nav_item"
-        app:itemTextColor="@color/nav_text_color"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/navigation" />
 
     <Spinner
         android:id="@+id/sortSpinner"

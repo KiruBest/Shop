@@ -4,20 +4,19 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.shop.R
@@ -36,6 +35,7 @@ import com.shop.ui.admin.ADMIN_ID
 import com.shop.ui.chat.AdminChatActivity
 import com.shop.ui.chat.ChatActivity
 import com.shop.ui.personalaccount.PersonalAccount
+import com.shop.ui.productpage.ProductPageActivity
 import com.shop.ui.register.AuthActivity
 
 
@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var shopFragment: ShopFragment
     private lateinit var basketFragment: BasketFragment
     private lateinit var favoriteFragment: FavoriteFragment
+
+    private lateinit var searchAdapter: ProductAdapter
 
     private val productDatabase = ProductDatabase.instance()
 
@@ -79,26 +81,109 @@ class MainActivity : AppCompatActivity() {
         //Здесь теоретически будут пункты сортировки, но я думаю надо будет сделать по-другому
         initSortSpinner()
 
-        binding.search.addTextChangedListener {
-            val text = it.toString()
-            if (text == "") {
-                binding.fragmentContainerView.visibility = View.VISIBLE
-                binding.searchRecyclerView.visibility = View.GONE
-            } else {
-                binding.fragmentContainerView.visibility = View.GONE
-                binding.searchRecyclerView.visibility = View.VISIBLE
+        searchAdapter = ProductAdapter(
+            mutableListOf(),
+            onItemClick = { product ->
+                val intent = Intent(this, ProductPageActivity::class.java)
+                intent.putExtra("product", product)
+                startActivity(intent)
+            },
 
-                val searchProducts = mutableListOf<Product>()
+            onBasketClick = { productID, uid ->
+                BasketProduct.products.forEach {
+                    if (it.id == productID) {
+                        productDatabase.dropProductFromBasket(uid, productID) {
+                            Toast.makeText(
+                                this,
+                                "Объект удален из корзины",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
 
-                Product.products.forEach { prod ->
-                    if (prod.title.contains(text)) {
-                        searchProducts.add(prod)
+                        return@ProductAdapter
                     }
                 }
 
-                Log.i("taf", searchProducts.toString())
-            }
+                Product.products.forEach {
+                    if (it.id == productID) {
+                        MaterialAlertDialogBuilder(this)
+                            .setTitle(resources.getString(R.string.pick_size))
+                            .setItems(it.sizes.toTypedArray()) { _, _ ->
+                                productDatabase.addToBasket(productID, uid, 1)
+                                Toast.makeText(
+                                    this,
+                                    "Объект добавлен в корзину",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            .show()
+                        return@ProductAdapter
+                    }
+                }
+            },
+
+            onFavoriteClick = { productID, uid ->
+                FavoriteProduct.products.forEach {
+                    if (it.id == productID) {
+                        productDatabase.dropProductFromFavorite(uid, productID) {
+                            Toast.makeText(
+                                this,
+                                "Объект удален из корзины",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        return@ProductAdapter
+                    }
+                }
+
+                productDatabase.addToFavorite(productID, uid)
+                Toast.makeText(
+                    this,
+                    "Объект добавлен в избранное",
+                    Toast.LENGTH_SHORT
+                ).show()
+            })
+
+        binding.searchRecyclerView.apply {
+            adapter = searchAdapter
+            layoutManager = GridLayoutManager(this@MainActivity, 2)
         }
+
+        binding.search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                return
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                return
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                val text = p0.toString()
+                if (text == "") {
+                    binding.searchRecyclerView.visibility = View.GONE
+                    binding.scrollView.visibility = View.VISIBLE
+                } else {
+                    binding.searchRecyclerView.visibility = View.VISIBLE
+                    binding.scrollView.visibility = View.GONE
+
+                    val searchProducts = mutableListOf<Product>()
+
+                    Product.products.forEach { product ->
+                        if (product.title.contains(text, true) || product.description.contains(
+                                text,
+                                true
+                            )
+                        ) {
+                            searchProducts.add(product)
+                        }
+                    }
+
+                    searchAdapter.filter(searchProducts)
+                }
+            }
+
+        })
     }
 
     //Таким образом в actionBar добавляется меню
@@ -256,7 +341,6 @@ class MainActivity : AppCompatActivity() {
 
     //Здесь для выпадающего списка по клику на Сотрировка создаются пункты
     //Возможно стоит переделать
-    @SuppressLint("ResourceType", "UseCompatLoadingForDrawables")
     private fun initSortSpinner() {
         //Назначение адаптера - преобразовать один вид информации в другой,
         // без вмешательства в исходное состояние информации.
@@ -284,7 +368,7 @@ class MainActivity : AppCompatActivity() {
 
                 //Сравниваем значения полученное при нажатии с каждым элементом спинера
                 when (text) {
-                    sortName[0] -> {
+                    sortName[1] -> {
                         shopFragment.productRecyclerView?.adapter?.let {
                             temp.clear()
                             temp.addAll((it as ProductAdapter).products)
@@ -312,7 +396,7 @@ class MainActivity : AppCompatActivity() {
                             it.notifyItemRangeChanged(0, it.itemCount)
                         }
                     }
-                    sortName[1] -> {
+                    sortName[0] -> {
                         shopFragment.productRecyclerView?.adapter?.let {
                             temp.clear()
                             temp.addAll((it as ProductAdapter).products)

@@ -1,5 +1,6 @@
 package com.shop.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,12 @@ class ProductAdapter(
 ) :
     RecyclerView.Adapter<ProductAdapter.ProductHolder>() {
 
+    private var mProducts = mutableListOf<Product>()
+
+    init {
+        mProducts = products
+    }
+
     //Объявляются необходимые view
     inner class ProductHolder(binding: ProductCartBinding) : RecyclerView.ViewHolder(binding.root) {
         val title = binding.title
@@ -38,40 +45,45 @@ class ProductAdapter(
 
     //Связываются view и данные
     override fun onBindViewHolder(holder: ProductHolder, position: Int) {
-        if (position >= itemCount || itemCount <= 0) return
-        holder.title.text = products[position].title
-        holder.price.text = holder.itemView.context.getString(R.string.price, products[position].price.toString())
+        holder.title.text = mProducts[position].title
+        holder.price.text = holder.itemView.context.getString(R.string.price, mProducts[position].price.toString())
         Glide.with(holder.itemView)
-            .load(products[position].photo)
+            .load(mProducts[position].photo)
             .into(holder.photo)
 
         holder.basketButton.isActivated = false
         holder.favoriteButton.isActivated = false
 
         holder.photo.setOnClickListener {
-            onItemClick(products[position])
+            onItemClick(mProducts[position])
         }
 
         BasketProduct.products.forEach { basketProduct ->
-            if (basketProduct.id == products[position].id) holder.basketButton.isActivated = true
+            if (basketProduct.id == mProducts[position].id) holder.basketButton.isActivated = true
         }
 
         FavoriteProduct.products.forEach { favoriteProduct ->
-            if (favoriteProduct.id == products[position].id) holder.favoriteButton.isActivated = true
+            if (favoriteProduct.id == mProducts[position].id) holder.favoriteButton.isActivated = true
         }
 
         holder.basketButton.setOnClickListener {
             Firebase.auth.currentUser?.uid?.let { uid ->
-                onBasketClick(products[position].id, uid)
+                onBasketClick(mProducts[position].id, uid)
             }
         }
 
         holder.favoriteButton.setOnClickListener {
             Firebase.auth.currentUser?.uid?.let { uid ->
-                onFavoriteClick(products[position].id, uid)
+                onFavoriteClick(mProducts[position].id, uid)
             }
         }
     }
 
-    override fun getItemCount(): Int = Product.products.size
+    override fun getItemCount(): Int = mProducts.size
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun filter(filterProducts: MutableList<Product>) {
+        mProducts = filterProducts
+        notifyDataSetChanged()
+    }
 }

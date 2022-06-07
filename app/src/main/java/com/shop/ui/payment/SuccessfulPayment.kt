@@ -2,10 +2,10 @@ package com.shop.ui.payment
 
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.shop.R
 
 
@@ -23,9 +23,7 @@ class SuccessfulPayment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val handler = Handler()
         handler.postDelayed({
-            val fragment = SuccessfulPayment()
-            requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
-                .replace(R.id.fragmentContainerView, fragment).commit()
+            requireActivity().onBackPressed()
         },3000)
         super.onViewCreated(view, savedInstanceState)
     }
