@@ -55,6 +55,7 @@
     <string name="add_basket_size">Выбранный размер:</string>
     <string name="add_basket_add">Добавить в корзину</string>
     <string name="payment_wait">Данные введены верно и перенаправляются в банк, пожалуйста ожидайте…</string>
+    <string name="payment_successful">Оплата прошла успешно, ваш заказ принят!</string>
 
     <string-array name="sort_category">
         <item>По названию (↑)</item>
