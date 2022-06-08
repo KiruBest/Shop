@@ -27,17 +27,19 @@ class PersonalAccount : Fragment() {
     private val userDatabase = UserDatabase.instance()
 
     private val getContent =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { userPhoto ->
-            userDatabase.saveProfilePhoto(Firebase.auth.uid.toString(), userPhoto) { url ->
-                User.currentUser?.let {
-                    it.photo = url
-                    Glide.with(requireContext()).load(it.photo).into(binding.accountImage)
-                    requireActivity().invalidateOptionsMenu()
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { userPhoto ->
+                userDatabase.saveProfilePhoto(Firebase.auth.uid.toString(), userPhoto) { url ->
+                    User.currentUser?.let { user ->
+                        user.photo = url
+                        Glide.with(requireContext()).load(user.photo).into(binding.accountImage)
+                        requireActivity().invalidateOptionsMenu()
+                    }
                 }
-            }
 
-            Toast.makeText(requireContext(), "Не забудьте сохранить изменения", Toast.LENGTH_SHORT)
-                .show()
+                Toast.makeText(requireContext(), "Не забудьте сохранить изменения", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
 
     override fun onCreateView(
